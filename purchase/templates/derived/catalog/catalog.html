@@ -1,0 +1,56 @@
+<%inherit file="/base/index.html"/>
+
+${sections()}
+
+<%def name="heading()">
+    <h1 class="main">Каталог товаров</h1>
+</%def>
+
+<%def name="description()">
+    <p><b>Описание</b>: ${c.current_section.description}</p>
+    <p><i>Дата создания: ${c.current_section.created}</i><br />
+    <i>Дата изменения: ${c.current_section.edited}</i></p>
+</%def>
+
+<%def name="actions()">
+    <a href="${h.url(controller='catalog', action='new_section')}">Добавить раздел</a>  |
+    <a href="${h.url(controller='catalog', action='edit_section', name=c.current_section.name)}">Изменить раздел</a> |
+    <a href="${h.url(controller='catalog', action='delete_section', name=c.current_section.name)}">Удалить раздел</a>
+</%def>
+
+<%def name="breadcrumbs()">
+    <h3>
+    Каталог =>
+    % for item in c.breadcrumbs:
+        % if item == c.breadcrumbs[-1]:
+            <a href="${h.url(controller='catalog', action='section', name=item)}">${item}</a>
+        % else:
+            <a href="${h.url(controller='catalog', action='section', name=item)}">${item}</a> =>
+        % endif
+    % endfor
+    </h3>
+</%def>
+
+<%def name="current_section()">
+    % for subsection in c.section:
+    % if subsection.parent_section_id == c.current_section.id:
+        <ul>
+        <li>
+        <a href="${h.url(controller='catalog', action='section', name=subsection.name)}">${subsection.name}</a>
+        </li>
+        </ul>
+    % endif
+    % endfor
+</%def>
+
+<%def name="sections()">
+    % for section in c.section:
+    % if section.parent_section_id == 1:
+        <ul>
+        <li>
+        <a href="${h.url(controller='catalog', action='section', name=section.name)}">${section.name}</a>
+        </li>
+        </ul>
+    % endif
+    % endfor
+</%def>

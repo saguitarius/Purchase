@@ -1,0 +1,3 @@
+include purchase/config/deployment.ini_tmpl
+recursive-include purchase/public *
+recursive-include purchase/templates *

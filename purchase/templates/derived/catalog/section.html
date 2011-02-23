@@ -1,0 +1,13 @@
+<%inherit file="/base/index.html"/>
+
+<%namespace file="/derived/catalog/catalog.html" name="catalog" import='*'/>
+
+${sections()}
+${breadcrumbs()}
+${current_section()}
+${description()}
+${actions()}
+
+<%def name="heading()">
+    <h1 class="main">Разделы каталога</h1>
+</%def>

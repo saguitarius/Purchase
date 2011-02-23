@@ -1,0 +1,31 @@
+<%inherit file="/base/index.html"/>
+
+<%namespace file="/derived/catalog/catalog.html" name="catalog" import='*'/>
+
+${h.form_start(h.url(controller='catalog', action='create_section'), method="post")}
+    ${h.field(
+        u"Название",
+        h.text(name='name'),
+        required=True,
+    )}
+    ${h.field(
+        u"Раздел",
+        h.select(
+            "parent_section",
+            id='parent_section',
+            options=c.available_sections,
+            selected_values=[],
+        ),
+        required=True
+    )}
+    ${h.field(
+        u"Описание",
+        h.textarea(name='description', rows=7, cols=40),
+        required=True,
+    )}
+    ${h.field(field=h.submit(value=u"Создать", name='submit'))}
+${h.form_end()}
+
+<%def name="heading()">
+    <h1 class="main">Добавление раздела</h1>
+</%def>
