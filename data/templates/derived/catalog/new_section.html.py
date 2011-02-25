@@ -4,7 +4,7 @@ UNDEFINED = runtime.UNDEFINED
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 5
-_modified_time = 1298485328.9070001
+_modified_time = 1298551341.697
 _template_filename='D:\\PyProjects\\Purchase\\purchase\\templates/derived/catalog/new_section.html'
 _template_uri='/derived/catalog/new_section.html'
 _template_cache=cache.Cache(__name__, _modified_time)
@@ -53,7 +53,7 @@ def render_body(context,**pageargs):
         __M_writer(u'\r\n    ')
         # SOURCE LINE 11
         __M_writer(escape(h.field(
-        u"Раздел",
+        u"Поместить в",
         h.select(
             "parent_section",
             id='parent_section',

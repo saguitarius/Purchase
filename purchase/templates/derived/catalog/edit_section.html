@@ -2,7 +2,7 @@
 
 <%namespace file="/derived/catalog/catalog.html" name="catalog" import='*'/>
 
-${h.form_start(h.url(controller='catalog', action='save_section'), method="post")}
+${h.form_start(h.url(name = c.current_section.name,controller='catalog', action='save_section'), method="post")}
     ${h.field(
         u"Название",
         h.text(name='name'),
@@ -16,7 +16,7 @@ ${h.form_start(h.url(controller='catalog', action='save_section'), method="post"
             options=c.available_sections,
             selected_values=[],
         ),
-        required=True
+        required=True,
     )}
     ${h.field(
         u"Описание",
@@ -24,6 +24,8 @@ ${h.form_start(h.url(controller='catalog', action='save_section'), method="post"
         required=True,
     )}
     ${h.field(field=h.submit(value=u"Изменить", name='submit'))}
+    
+    
 ${h.form_end()}
 
 <%def name="heading()">

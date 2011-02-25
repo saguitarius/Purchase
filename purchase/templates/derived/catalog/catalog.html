@@ -1,37 +1,72 @@
 <%inherit file="/base/index.html"/>
 
-${sections()}
+${main_sections()}
 
 <%def name="heading()">
     <h1 class="main">Каталог товаров</h1>
 </%def>
 
-<%def name="description()">
+<%def name="item_actions()">
+    <p>
+    <a href="${h.url(controller='catalog', action='new_item', name=c.current_section.name)}">Добавить объект</a>
+    </p>
+</%def>
+
+<%def name="section_items()">
+    <p><b>Объекты данного раздела:</b></p>
+    <table border="1" width="100%">
+        <tr>
+            <th>Марка</th>
+            <th>Модель</th>
+            <th>Описание</th>
+            <th>Цена</th>
+            <th>Дата изменения</th>
+            <th>Добавить<br />в заявку</th>
+            <th>Действия</th>
+        </tr>
+    % for item in c.section_items:
+        <tr>
+            <td>${item.brand}</td>
+            <td>${item.model}</td>
+            <td>${item.description}</td>
+            <td>${item.price}</td>
+            <td>${item.edited}</td>
+            <td><a href="$h.url(controller='application', action='add_item')">X</a></td>
+            <td><a href="${h.url(id=item.id, controller='catalog', action='edit_item')}">Изменить</a>
+                <a href="${h.url(controller='catalog', action='delete_item', id=item.id)}">Удалить</a></td>
+        </tr>
+    % endfor
+    </table>
+</%def>
+
+<%def name="section_description()">
     <p><b>Описание</b>: ${c.current_section.description}</p>
     <p><i>Дата создания: ${c.current_section.created}</i><br />
     <i>Дата изменения: ${c.current_section.edited}</i></p>
 </%def>
 
-<%def name="actions()">
+<%def name="section_actions()">
+    <p>
     <a href="${h.url(controller='catalog', action='new_section')}">Добавить раздел</a>  |
     <a href="${h.url(controller='catalog', action='edit_section', name=c.current_section.name)}">Изменить раздел</a> |
     <a href="${h.url(controller='catalog', action='delete_section', name=c.current_section.name)}">Удалить раздел</a>
+    </p>
 </%def>
 
 <%def name="breadcrumbs()">
     <h3>
-    Каталог =>
-    % for item in c.breadcrumbs:
-        % if item == c.breadcrumbs[-1]:
-            <a href="${h.url(controller='catalog', action='section', name=item)}">${item}</a>
+    <a href="${h.url(controller='catalog', action='section', name='Главная')}">Каталог</a> =>
+    % for section in c.breadcrumbs:
+        % if section == c.breadcrumbs[-1]:
+            <a href="${h.url(controller='catalog', action='section', name=section)}">${section}</a>
         % else:
-            <a href="${h.url(controller='catalog', action='section', name=item)}">${item}</a> =>
+            <a href="${h.url(controller='catalog', action='section', name=section)}">${section}</a> =>
         % endif
     % endfor
     </h3>
 </%def>
 
-<%def name="current_section()">
+<%def name="subsections()">
     % for subsection in c.section:
     % if subsection.parent_section_id == c.current_section.id:
         <ul>
@@ -43,7 +78,7 @@ ${sections()}
     % endfor
 </%def>
 
-<%def name="sections()">
+<%def name="main_sections()">
     % for section in c.section:
     % if section.parent_section_id == 1:
         <ul>
@@ -52,5 +87,21 @@ ${sections()}
         </li>
         </ul>
     % endif
+    % endfor
+</%def>
+
+
+
+<%def name="all_sec()">
+    % for section in c.section:
+    %   if section.parent_section_id == 1:
+            <ul><li>${section.name}
+    %       for subsection in c.section:
+    %           if subsection.parent_section_id == section.id:
+                    <ul><li>${subsection.name}</li></ul>
+    %           endif
+    %       endfor
+            </li></ul>
+    %   endif
     % endfor
 </%def>

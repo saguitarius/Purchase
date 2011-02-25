@@ -1,0 +1,51 @@
+<%inherit file="/base/index.html"/>
+
+<%namespace file="/derived/catalog/catalog.html" name="catalog" import='*'/>
+
+${h.form_start(h.url(controller='catalog', action='create_item'), method="post")}
+    ${h.field(
+        u"Раздел",
+        h.select(
+            "section_id",
+            id='section_id',
+            options=c.available_sections,
+            selected_values=[],
+        ),
+        required=True
+    )}
+    ${h.field(
+        u"Марка",
+        h.text(name='brand'),
+        required=True,
+    )}
+    ${h.field(
+        u"Модель",
+        h.text(name='model'),
+        required=True,
+    )}
+    ${h.field(
+        u"Описание",
+        h.textarea(name='description', rows=7, cols=40),
+        required=True,
+    )}
+    ${h.field(
+        u"Ед. изм.",
+        h.select(
+            "unit_id",
+            id='unit_id',
+            options=c.available_units,
+            selected_values=[],
+        ),
+        required=True
+    )}
+    ${h.field(
+        u"Цена (руб.)",
+        h.text(name='price'),
+        required=True,
+    )}
+    ${h.field(field=h.submit(value=u"Создать", name='submit'))}
+${h.form_end()}
+
+<%def name="heading()">
+    <h1 class="main">Добавление объекта</h1>
+</%def>
