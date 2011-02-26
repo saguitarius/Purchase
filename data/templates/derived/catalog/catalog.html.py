@@ -4,7 +4,7 @@ UNDEFINED = runtime.UNDEFINED
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 5
-_modified_time = 1298625441.723
+_modified_time = 1298656018.4579999
 _template_filename=u'D:\\PyProjects\\Purchase\\purchase\\templates/derived/catalog/catalog.html'
 _template_uri=u'/derived/catalog/catalog.html'
 _template_cache=cache.Cache(__name__, _modified_time)
@@ -95,7 +95,7 @@ def render_main_sections(context):
                 # SOURCE LINE 84
                 __M_writer(u'        <ul>\r\n        <li>\r\n        <a href="')
                 # SOURCE LINE 86
-                __M_writer(escape(h.url(controller='catalog', action='section', name=section.name)))
+                __M_writer(escape(h.url(controller='catalog', action='section', id=section.id)))
                 __M_writer(u'">')
                 __M_writer(escape(section.name))
                 __M_writer(u'</a>\r\n        </li>\r\n        </ul>\r\n')
@@ -115,7 +115,7 @@ def render_breadcrumbs(context):
         # SOURCE LINE 56
         __M_writer(u'\r\n    <h3>\r\n    <a href="')
         # SOURCE LINE 58
-        __M_writer(escape(h.url(controller='catalog', action='section', name='Главная')))
+        __M_writer(escape(h.url(controller='catalog', action='section', id='1')))
         __M_writer(u'">\u041a\u0430\u0442\u0430\u043b\u043e\u0433</a> =>\r\n')
         # SOURCE LINE 59
         for section in c.breadcrumbs:
@@ -123,17 +123,17 @@ def render_breadcrumbs(context):
             if section == c.breadcrumbs[-1]:
                 # SOURCE LINE 61
                 __M_writer(u'            <a href="')
-                __M_writer(escape(h.url(controller='catalog', action='section', name=section)))
+                __M_writer(escape(h.url(controller='catalog', action='section', id=section[1])))
                 __M_writer(u'">')
-                __M_writer(escape(section))
+                __M_writer(escape(section[0]))
                 __M_writer(u'</a>\r\n')
                 # SOURCE LINE 62
             else:
                 # SOURCE LINE 63
                 __M_writer(u'            <a href="')
-                __M_writer(escape(h.url(controller='catalog', action='section', name=section)))
+                __M_writer(escape(h.url(controller='catalog', action='section', id=section[1])))
                 __M_writer(u'">')
-                __M_writer(escape(section))
+                __M_writer(escape(section[0]))
                 __M_writer(u'</a> =>\r\n')
                 pass
             pass
@@ -159,7 +159,7 @@ def render_subsections(context):
                 # SOURCE LINE 72
                 __M_writer(u'        <ul>\r\n        <li>\r\n        <a href="')
                 # SOURCE LINE 74
-                __M_writer(escape(h.url(controller='catalog', action='section', name=subsection.name)))
+                __M_writer(escape(h.url(controller='catalog', action='section', id=subsection.id)))
                 __M_writer(u'">')
                 __M_writer(escape(subsection.name))
                 __M_writer(u'</a>\r\n        </li>\r\n        </ul>\r\n')
@@ -182,10 +182,10 @@ def render_section_actions(context):
         __M_writer(escape(h.url(controller='catalog', action='new_section')))
         __M_writer(u'">\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b</a>  |\r\n    <a href="')
         # SOURCE LINE 51
-        __M_writer(escape(h.url(controller='catalog', action='edit_section', name=c.current_section.name)))
+        __M_writer(escape(h.url(controller='catalog', action='edit_section', id=c.current_section.id)))
         __M_writer(u'">\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b</a> |\r\n    <a href="')
         # SOURCE LINE 52
-        __M_writer(escape(h.url(controller='catalog', action='delete_section', name=c.current_section.name)))
+        __M_writer(escape(h.url(controller='catalog', action='delete_section', id=c.current_section.id)))
         __M_writer(u'">\u0423\u0434\u0430\u043b\u0438\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b</a>\r\n    </p>\r\n')
         return ''
     finally:

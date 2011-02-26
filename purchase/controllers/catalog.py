@@ -20,6 +20,17 @@ import datetime
 
 log = logging.getLogger(__name__)
 
+class UniqueSection(formencode.validators.FancyValidator):
+    def _to_python(self, values, state):
+        section_q = meta.Session.query(model.Section)
+        query = section_q.filter_by(name=values['name'])
+        if request.urlvars['action'] == 'create_section':
+            existing = query.first()
+            if existing is not None:
+                raise formencode.Invalid("Раздел с таким названием уже "
+                    "сущетвует.", values, state)
+        return values
+
 class NewSectionForm(formencode.Schema):
     allow_extra_fields = True
     filter_extra_fields = True
@@ -36,6 +47,24 @@ class NewSectionForm(formencode.Schema):
             'empty':u'Введите описание раздела.'
         }
     )
+    chained_validators = [UniqueSection()]
+    
+class EditSectionForm(formencode.Schema):
+    allow_extra_fields = True
+    filter_extra_fields = True
+    name = formencode.validators.String(
+        not_empty=True,
+        messages={
+            'empty':u'Введите название раздела.'
+        }
+    )
+    description = formencode.validators.String(
+        not_empty=True,
+        messages={
+            'empty':u'Введите описание раздела.'
+        }
+    )
+    chained_validators = [UniqueSection()]
     
 class DeleteSectionForm(formencode.Schema):
     allow_extra_fields = True
@@ -61,35 +90,35 @@ class CatalogController(BaseController):
         c.main_sections = section_q.filter_by(parent_section_id = 1)
         return render('/derived/catalog/catalog.html')
     
-    def section(self):        
+    def section(self, id):        
         "Returns list of subsections and breadcrumbs"
         section_q = meta.Session.query(model.Section)
         c.section = section_q
              
         def breadcrumbs(section_id):
-            "Returns list of sectins up to Home"
+            "Returns list of sectins up to Home."
             a = ''
             b = []
+            d = []
             while a != None:
                 a = c.section.filter_by(id = section_id).first().parent_section_id
                 a_name = c.section.filter_by(id = section_id).first().name
+                a_id = c.section.filter_by(id = section_id).first().id
                 if a != None:
-                    b = [a_name] + b
+                    b = [(a_name, a_id)] + b
                 section_id = a
-            return b    
+            c.breadcrumbs = b
         
-        try:
-            request.params['name']
-            current_section = request.params['name']
-            c.current_section = section_q.filter_by(name = current_section).first()
-            c.breadcrumbs = breadcrumbs(c.current_section.id)
+        #try:
+        c.current_section = section_q.filter_by(id = id).first()
+        breadcrumbs(c.current_section.id)
         
-            item_q = meta.Session.query(model.Item)
-            c.section_items = item_q.filter_by(section_id = c.current_section.id)
+        item_q = meta.Session.query(model.Item)
+        c.section_items = item_q.filter_by(section_id = c.current_section.id)
             
-            return render('/derived/catalog/section.html')
-        except:
-            h.redirect(url(controller='catalog', action='section', name='Главная'))
+        return render('/derived/catalog/section.html')
+        #except:
+            #h.redirect(url(controller='catalog', action='section', id='1'))
             
     def new_section(self):
         "Renders form for creating a section"
@@ -106,12 +135,12 @@ class CatalogController(BaseController):
         section.description = self.form_result['description']
         meta.Session.add(section)
         meta.Session.flush()
-        h.redirect(url(controller='catalog', action='section', name=section.name))
+        h.redirect(url(controller='catalog', action='section', id=section.id))
         
     def edit_section(self):
         "Renders form for editing/deleting a section"
         section_q = meta.Session.query(model.Section)
-        section = section_q.filter_by(name=request.params['name']).first()
+        section = section_q.filter_by(id=request.urlvars['id']).first()
         c.current_section = section
         c.available_sections = [(section.id, section.name) for section in section_q]
         values = {
@@ -122,25 +151,25 @@ class CatalogController(BaseController):
         #return render('/derived/catalog/edit.html')
         return htmlfill.render(render('/derived/catalog/edit_section.html'), values)
     
-    @validate(schema=NewSectionForm(), form='edit_section')
+    @validate(schema=EditSectionForm(), form='edit_section')
     def save_section(self):
         "Saves changes"
         section_q = meta.Session.query(model.Section)
-        section = section_q.filter_by(id=self.form_result['parent_section']).first()
+        section = section_q.filter_by(id=request.urlvars['id']).first()
         section.name = self.form_result['name']
         section.description = self.form_result['description']
         section.edited = datetime.datetime.now()
         meta.Session.commit()
-        h.redirect(url(controller='catalog', action='section', name=section.name))
+        h.redirect(url(controller='catalog', action='section', id=section.id))
     
     @validate(schema=DeleteSectionForm(), form='delete')
     def delete_section(self):
         "Deletes section and all child sections"
         section_q = meta.Session.query(model.Section)
-        section = section_q.filter_by(name=request.params['name']).first()
+        section = section_q.filter_by(id=request.urlvars['id']).first()
         meta.Session.delete(section)
         meta.Session.commit()
-        h.redirect(url(controller='catalog', action='index'))
+        h.redirect(url(controller='catalog', action='section', id=section.parent_section_id))
     
     def new_item(self):
         "Renders form for creating an item"
@@ -198,7 +227,7 @@ class CatalogController(BaseController):
         item.price = self.form_result['price']
         item.edited = datetime.datetime.now()
         meta.Session.commit()
-        h.redirect(url(controller='catalog', action='index'))
+        h.redirect(url(controller='catalog', action='section', id=item.section_id))
     
     def delete_item(self):
         "Deletes item"
@@ -206,4 +235,4 @@ class CatalogController(BaseController):
         item = item_q.filter_by(id=request.urlvars['id']).first()
         meta.Session.delete(item)
         meta.Session.commit()
-        h.redirect(url(controller='catalog', action='section'))
+        h.redirect(url(controller='catalog', action='section', id=item.section_id))

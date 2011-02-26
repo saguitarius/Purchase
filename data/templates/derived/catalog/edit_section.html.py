@@ -4,7 +4,7 @@ UNDEFINED = runtime.UNDEFINED
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 5
-_modified_time = 1298571710.6900001
+_modified_time = 1298664404.984
 _template_filename='D:\\PyProjects\\Purchase\\purchase\\templates/derived/catalog/edit_section.html'
 _template_uri='/derived/catalog/edit_section.html'
 _template_cache=cache.Cache(__name__, _modified_time)
@@ -41,7 +41,7 @@ def render_body(context,**pageargs):
         # SOURCE LINE 3
         __M_writer(u'\r\n\r\n')
         # SOURCE LINE 5
-        __M_writer(escape(h.form_start(h.url(name = c.current_section.name,controller='catalog', action='save_section'), method="post")))
+        __M_writer(escape(h.form_start(h.url(id = c.current_section.id,controller='catalog', action='save_section'), method="post")))
         __M_writer(u'\r\n    ')
         # SOURCE LINE 6
         __M_writer(escape(h.field(
@@ -53,30 +53,19 @@ def render_body(context,**pageargs):
         __M_writer(u'\r\n    ')
         # SOURCE LINE 11
         __M_writer(escape(h.field(
-        u"Раздел",
-        h.select(
-            "parent_section",
-            id='parent_section',
-            options=c.available_sections,
-            selected_values=[],
-        ),
-        required=True,
-    )))
-        # SOURCE LINE 20
-        __M_writer(u'\r\n    ')
-        # SOURCE LINE 21
-        __M_writer(escape(h.field(
         u"Описание",
         h.textarea(name='description', rows=7, cols=40),
         required=True,
     )))
-        # SOURCE LINE 25
+        # SOURCE LINE 15
         __M_writer(u'\r\n    ')
-        # SOURCE LINE 26
+        # SOURCE LINE 16
         __M_writer(escape(h.field(field=h.submit(value=u"Изменить", name='submit'))))
         __M_writer(u'\r\n    \r\n    \r\n')
-        # SOURCE LINE 29
+        # SOURCE LINE 19
         __M_writer(escape(h.form_end()))
+        __M_writer(u'\r\n\r\n')
+        # SOURCE LINE 23
         __M_writer(u'\r\n\r\n')
         return ''
     finally:
@@ -90,9 +79,9 @@ def render_heading(context):
         _mako_get_namespace(context, u'catalog')._populate(_import_ns, [u'*'])
         c = _import_ns.get('c', context.get('c', UNDEFINED))
         __M_writer = context.writer()
-        # SOURCE LINE 31
+        # SOURCE LINE 21
         __M_writer(u'\r\n    <h1 class="main">\u0418\u0437\u043c\u0435\u043d\u0435\u043d\u0438\u0435 \u0440\u0430\u0437\u0434\u0435\u043b\u0430 "')
-        # SOURCE LINE 32
+        # SOURCE LINE 22
         __M_writer(escape(c.current_section.name))
         __M_writer(u'"</h1>\r\n')
         return ''

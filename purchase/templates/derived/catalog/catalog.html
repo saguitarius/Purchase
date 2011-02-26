@@ -48,19 +48,19 @@ ${main_sections()}
 <%def name="section_actions()">
     <p>
     <a href="${h.url(controller='catalog', action='new_section')}">Добавить раздел</a>  |
-    <a href="${h.url(controller='catalog', action='edit_section', name=c.current_section.name)}">Изменить раздел</a> |
-    <a href="${h.url(controller='catalog', action='delete_section', name=c.current_section.name)}">Удалить раздел</a>
+    <a href="${h.url(controller='catalog', action='edit_section', id=c.current_section.id)}">Изменить раздел</a> |
+    <a href="${h.url(controller='catalog', action='delete_section', id=c.current_section.id)}">Удалить раздел</a>
     </p>
 </%def>
 
 <%def name="breadcrumbs()">
     <h3>
-    <a href="${h.url(controller='catalog', action='section', name='Главная')}">Каталог</a> =>
+    <a href="${h.url(controller='catalog', action='section', id='1')}">Каталог</a> =>
     % for section in c.breadcrumbs:
         % if section == c.breadcrumbs[-1]:
-            <a href="${h.url(controller='catalog', action='section', name=section)}">${section}</a>
+            <a href="${h.url(controller='catalog', action='section', id=section[1])}">${section[0]}</a>
         % else:
-            <a href="${h.url(controller='catalog', action='section', name=section)}">${section}</a> =>
+            <a href="${h.url(controller='catalog', action='section', id=section[1])}">${section[0]}</a> =>
         % endif
     % endfor
     </h3>
@@ -71,7 +71,7 @@ ${main_sections()}
     % if subsection.parent_section_id == c.current_section.id:
         <ul>
         <li>
-        <a href="${h.url(controller='catalog', action='section', name=subsection.name)}">${subsection.name}</a>
+        <a href="${h.url(controller='catalog', action='section', id=subsection.id)}">${subsection.name}</a>
         </li>
         </ul>
     % endif
@@ -83,7 +83,7 @@ ${main_sections()}
     % if section.parent_section_id == 1:
         <ul>
         <li>
-        <a href="${h.url(controller='catalog', action='section', name=section.name)}">${section.name}</a>
+        <a href="${h.url(controller='catalog', action='section', id=section.id)}">${section.name}</a>
         </li>
         </ul>
     % endif
