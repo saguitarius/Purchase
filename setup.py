@@ -14,7 +14,10 @@ setup(
     url='',
     install_requires=[
         "Pylons>=1.0",
-        "SQLAlchemy>=0.5",
+        "SQLAlchemy>=0.6",
+        "Mako>=0.2.2,<=0.2.99",
+        "FormBuild>=2.0,<2.99",
+        "AuthKit>=0.4.3,<=0.4.99",
     ],
     setup_requires=["PasteScript>=1.6.3"],
     packages=find_packages(exclude=['ez_setup']),

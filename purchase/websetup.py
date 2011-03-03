@@ -11,6 +11,8 @@ import os.path
 from purchase import model
 from purchase.model import meta
 
+from authkit.users.sqlalchemy_driver import UsersFromDatabase
+
 log = logging.getLogger(__name__)
 
 def setup_app(command, conf, vars):
@@ -18,11 +20,59 @@ def setup_app(command, conf, vars):
     # Don't reload the app if it was loaded under the testing environment
     if not pylons.test.pylonsapp:
         load_environment(conf.global_conf, conf.local_conf)
+    
+    # Auth tables
+    log.info("Adding the AuthKit model...")
+    users = UsersFromDatabase(model)
 
     # Create the tables if they don't already exist
     Base.metadata.bind = Base.engine
     Base.metadata.create_all(bind=Session.bind)
 
+    # Adding users, groups, roles
+    users.role_create("admin")
+    users.role_create("boss")
+    users.role_create("bigboss")
+    users.role_create("user")
+    
+    users.group_create(u"SOTO-50")
+    users.group_create(u"OLM-15")
+    users.group_create(u"admin")
+    
+    users.user_create("admin", password="admin")
+    users.user_add_role("admin", role="admin")
+    users.user_set_group("admin", group="admin")
+    
+    users.user_create("boss1", password="boss")
+    users.user_add_role("boss1", role="boss")
+    users.user_set_group("boss1", group="SOTO-50")
+    
+    users.user_create("boss2", password="boss")
+    users.user_add_role("boss2", role="boss")
+    users.user_set_group("boss2", group="OLM-15")
+    
+    users.user_create("bigboss", password="bigboss")
+    users.user_add_role("bigboss", role="bigboss")
+    users.user_set_group("bigboss", group="admin")
+    
+    users.user_create("user1", password="user1")
+    users.user_add_role("user1", role="user")
+    users.user_set_group("user1", group="SOTO-50")
+    
+    users.user_create("user2", password="user2")
+    users.user_add_role("user2", role="user")
+    users.user_set_group("user2", group="SOTO-50")
+    
+    users.user_create("user3", password="user3")
+    users.user_add_role("user3", role="user")
+    users.user_set_group("user3", group="OLM-15")
+    
+    users.user_create("user4", password="user4")
+    users.user_add_role("user4", role="user")
+    users.user_set_group("user4", group="OLM-15")
+    
+    
+    # Adding sections
     log.info("Adding main sections...")
     section_home = model.Section()
     section_home.name = u'Главная'
@@ -96,17 +146,19 @@ def setup_app(command, conf, vars):
     meta.Session.add(section_amd)
     meta.Session.flush()
     
+    # Adding units
     log.info("Adding units...")
     unit_1 = model.Unit()
     unit_1.name = u'шт.'
     meta.Session.add(unit_1)
     meta.Session.flush()
     
+    # Adding items
     log.info("Adding items...")
     item_1 = model.Item()
     item_1.brand = u'Palit'
     item_1.model = u'Radeon 9600'
-    item_1.description = u'Хорошо горит'
+    item_1.description = u'DVI TV In/Out 128Mb'
     item_1.section_id = '6'
     item_1.unit_id = '1'
     item_1.price = '3500'
@@ -116,7 +168,7 @@ def setup_app(command, conf, vars):
     item_2 = model.Item()
     item_2.brand = u'Sapphire'
     item_2.model = u'Geforce 8800GT'
-    item_2.description = u'Ничё так'
+    item_2.description = u'512Mb <PCI-E> DDR-3 ZOTAC'
     item_2.section_id = '6'
     item_2.unit_id = '1'
     item_2.price = '4500'

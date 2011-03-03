@@ -3,8 +3,8 @@ from mako import runtime, filters, cache
 UNDEFINED = runtime.UNDEFINED
 __M_dict_builtin = dict
 __M_locals_builtin = locals
-_magic_number = 5
-_modified_time = 1298573485.7650001
+_magic_number = 6
+_modified_time = 1298974331.8499999
 _template_filename='D:\\PyProjects\\Purchase\\purchase\\templates/derived/catalog/new_item.html'
 _template_uri='/derived/catalog/new_item.html'
 _template_cache=cache.Cache(__name__, _modified_time)
@@ -21,7 +21,7 @@ def _mako_get_namespace(context, name):
         return context.namespaces[(__name__, name)]
 def _mako_generate_namespaces(context):
     # SOURCE LINE 3
-    ns = runtime.Namespace(u'catalog', context._clean_inheritance_tokens(), templateuri=u'/derived/catalog/catalog.html', callables=None, calling_uri=_template_uri, module=None)
+    ns = runtime.TemplateNamespace(u'catalog', context._clean_inheritance_tokens(), templateuri=u'/derived/catalog/catalog.html', callables=None, calling_uri=_template_uri)
     context.namespaces[(__name__, u'catalog')] = ns
 
 def _mako_inherit(template, context):

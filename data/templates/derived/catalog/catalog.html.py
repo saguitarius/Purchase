@@ -3,10 +3,10 @@ from mako import runtime, filters, cache
 UNDEFINED = runtime.UNDEFINED
 __M_dict_builtin = dict
 __M_locals_builtin = locals
-_magic_number = 5
-_modified_time = 1298656018.4579999
-_template_filename=u'D:\\PyProjects\\Purchase\\purchase\\templates/derived/catalog/catalog.html'
-_template_uri=u'/derived/catalog/catalog.html'
+_magic_number = 6
+_modified_time = 1298750142.1619999
+_template_filename='D:\\PyProjects\\Purchase\\purchase\\templates/derived/catalog/catalog.html'
+_template_uri='/derived/catalog/catalog.html'
 _template_cache=cache.Cache(__name__, _modified_time)
 _source_encoding='utf-8'
 from webhelpers.html import escape

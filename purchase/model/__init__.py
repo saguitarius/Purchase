@@ -27,7 +27,7 @@ section_table = schema.Table('section', meta.Base.metadata,
 )
 
 item_table = schema.Table('item', meta.Base.metadata,
-    schema.Column('id', types.Integer(), schema.Sequence('section_seq_id', optional=True), primary_key=True),
+    schema.Column('id', types.Integer(), schema.Sequence('item_seq_id', optional=True), primary_key=True),
     schema.Column('brand', types.Unicode(255)),
     schema.Column('model', types.Unicode(255)),
     schema.Column('description', types.Unicode(255)),
@@ -39,7 +39,7 @@ item_table = schema.Table('item', meta.Base.metadata,
 )
 
 unit_table = schema.Table('unit', meta.Base.metadata,
-    schema.Column('id', types.Integer(), schema.Sequence('section_seq_id', optional=True), primary_key=True),
+    schema.Column('id', types.Integer(), schema.Sequence('unit_seq_id', optional=True), primary_key=True),
     schema.Column('name', types.Unicode(255)),
 )
                           

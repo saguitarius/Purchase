@@ -8,12 +8,24 @@
     ${self.head()}
 </head>
 <body>
+    ${self.account()}
     ${self.heading()}
     ${self.header()}
     ${next.body()}
     ${self.footer()}
 </body>
 </html>
+
+
+<%def name="account()">
+    % if h.auth.authorized(h.auth.is_valid_user) and not (request.urlvars['controller'] == 'account' and request.urlvars['action'] == 'signout'):
+        <p>Вы вошли как <b><a href="${h.url(controller='account', action='cabinet')}">${request.environ['REMOTE_USER']}</a></b>,
+            <a href="${h.url('signout')}">Выйти</a></p>
+    % else:
+        <p><a href="${h.url('signin')}">Войти</a></p>
+    % endif
+    <hr>
+</%def>
 
 <%def name="title()">
     Система управления закупками
@@ -33,7 +45,8 @@
 
 <%def name="footer()">
     <p>
-        <a href="${h.url('/')}">[Главная]</a> |
+        <a href="${h.url('/')}">[Каталог]</a> |
+        <a href="${h.url(controller='account', action='index')}">[Пользователи]</a> |
         <a href="#top">[Наверх]</a>
     </p>
 </%def>

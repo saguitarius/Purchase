@@ -18,6 +18,8 @@ from pylons.decorators.rest import restrict
 from sqlalchemy import delete
 import datetime
 
+from authkit.authorize.pylons_adaptors import authorize
+
 log = logging.getLogger(__name__)
 
 class UniqueSection(formencode.validators.FancyValidator):
@@ -119,7 +121,8 @@ class CatalogController(BaseController):
         return render('/derived/catalog/section.html')
         #except:
             #h.redirect(url(controller='catalog', action='section', id='1'))
-            
+    
+    @authorize(h.auth.is_valid_user)        
     def new_section(self):
         "Renders form for creating a section"
         section_q = meta.Session.query(model.Section)

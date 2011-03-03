@@ -12,3 +12,5 @@ from formbuild.helpers import field
 from formbuild import start_with_layout as form_start, end_with_layout as form_end
 from formbuild.helpers import checkbox_group
 from webhelpers.html.tags import *
+
+from purchase.lib import auth

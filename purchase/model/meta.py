@@ -9,4 +9,6 @@ Session = scoped_session(sessionmaker())
 
 # The declarative Base
 Base = declarative_base()
+
+# Backward compatibility
 metadata = Base.metadata
