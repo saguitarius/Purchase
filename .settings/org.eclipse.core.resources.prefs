@@ -1,5 +1,9 @@
-#Wed Feb 23 11:26:31 MSK 2011
+#Thu Mar 31 11:25:45 MSD 2011
 eclipse.preferences.version=1
+encoding//purchase/controllers/account.py=utf-8
+encoding//purchase/controllers/app.py=utf-8
+encoding//purchase/controllers/campaign.py=utf-8
 encoding//purchase/controllers/catalog.py=utf-8
+encoding//purchase/model/__init__.py=utf-8
 encoding//purchase/templates/base/index.html=utf-8
 encoding//purchase/websetup.py=utf-8

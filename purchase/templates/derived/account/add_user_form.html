@@ -1,0 +1,55 @@
+<%inherit file="/base/index.html"/>
+
+<%def name="title()">Добавление пользователя</%def>
+<%def name="heading()"><h1>Добавление пользователя</h1></%def>
+
+${user_exists()}
+
+${h.form_start(h.url(controller='account', action='add_user'), method="post")}
+    ${h.field(
+        "Имя",
+        h.text(name='username'),
+        required=True,
+    )}
+    ${h.field(
+        "Пароль",
+        h.password(name='password'),
+        required=True,
+    )}    
+    ${h.field(
+        u"Группа",
+        h.select(
+            "group",
+            id='group',
+            options=c.available_groups,
+            selected_values=[],
+        ),
+        required=True
+    )}
+    ${h.field(
+        u"Права",
+        h.select(
+            "roles",
+            id='roles',
+            ##options=[''] + c.available_roles,
+            options=c.available_roles,
+            selected_values=[],
+            #multiple = True,
+        ),
+    )}
+    ${h.field(field=h.submit(value="Добавить", name='submit'))}
+${h.form_end()}
+    
+<%def name="user_exists_print()">
+    <p>Username <b>${c.username}</b> already exists.</p>    
+</%def>    
+    
+<%def name="user_exists()">
+    <%
+        try:
+            c.username
+            user_exists_print()
+        except:
+            pass
+    %>     
+</%def>    

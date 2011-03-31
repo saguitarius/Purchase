@@ -1,3 +1,5 @@
+## -*- coding: utf-8 -*-
+
 """The application's model objects"""
 from purchase.model.meta import Session, Base
 from purchase.model import meta
@@ -42,6 +44,49 @@ unit_table = schema.Table('unit', meta.Base.metadata,
     schema.Column('id', types.Integer(), schema.Sequence('unit_seq_id', optional=True), primary_key=True),
     schema.Column('name', types.Unicode(255)),
 )
+
+app_table = schema.Table('app', meta.Base.metadata,
+    schema.Column('id', types.Integer(), schema.Sequence('app_seq_id', optional=True), primary_key=True),
+    schema.Column('author_id', types.Integer, schema.ForeignKey('users.uid'), nullable=True),
+    schema.Column('year', types.Integer()),
+    schema.Column('status', types.Integer()),
+    schema.Column('campaign_id', types.Integer, schema.ForeignKey('campaign.id'), nullable=True),
+    schema.Column('info', types.Unicode(255)),
+    schema.Column('created', types.DateTime(), default=now),
+    schema.Column('edited', types.DateTime(), default=now),
+)
+
+app_elements_table = schema.Table('app_elements', meta.Base.metadata,
+    schema.Column('id', types.Integer(), schema.Sequence('app_elements_seq_id', optional=True), primary_key=True),
+    schema.Column('app_id', types.Integer, schema.ForeignKey('app.id'), nullable=True),
+    schema.Column('item_id', types.Integer, schema.ForeignKey('item.id'), nullable=True),
+    schema.Column('quarter1', types.Integer()),
+    schema.Column('quarter2', types.Integer()),
+    schema.Column('quarter3', types.Integer()),
+    schema.Column('quarter4', types.Integer()),
+    schema.Column('place', types.Integer, schema.ForeignKey('groups.uid'), nullable=True),
+    schema.Column('finsource', types.Integer, schema.ForeignKey('finsource.id'), nullable=True),
+    schema.Column('needs', types.Integer, schema.ForeignKey('needs.id'), nullable=True),
+    schema.Column('note', types.Unicode(255)),
+)
+
+finsource_table = schema.Table('finsource', meta.Base.metadata,
+    schema.Column('id', types.Integer(), schema.Sequence('finsource_seq_id', optional=True), primary_key=True),
+    schema.Column('name', types.Unicode(255)),
+)
+
+needs_table = schema.Table('needs', meta.Base.metadata,
+    schema.Column('id', types.Integer(), schema.Sequence('needs_seq_id', optional=True), primary_key=True),
+    schema.Column('name', types.Unicode(255)),
+)
+
+campaign_table = schema.Table('campaign', meta.Base.metadata,
+    schema.Column('id', types.Integer(), schema.Sequence('campaign_seq_id', optional=True), primary_key=True),
+    schema.Column('start_date', types.Date(), default=now),
+    schema.Column('end_date', types.Date()),
+    schema.Column('description', types.Unicode(255)),
+    schema.Column('status', types.Integer, default=0),
+)
                           
 class Section(object):
     pass
@@ -52,8 +97,44 @@ class Item(object):
 class Unit(object):
     pass
 
+class App(object):
+    pass
+
+class AppElements(object):
+    pass
+
+class FinSource(object):
+    pass
+
+class Needs(object):
+    pass
+
+class Campaign(object):
+    pass
+
 orm.mapper(Unit, unit_table)
-orm.mapper(Item, item_table)
+
+orm.mapper(FinSource, finsource_table)
+
+orm.mapper(Needs, needs_table)
+
+orm.mapper(Campaign, campaign_table, properties={
+    'apps':orm.relation(App),
+})
+
+orm.mapper(Item, item_table, properties={
+    'units':orm.relation(Unit),
+})
+
+orm.mapper(AppElements, app_elements_table, properties={
+    'finsources':orm.relation(FinSource, uselist=False, backref='app_elements'),
+    'needss':orm.relation(Needs, uselist=False, backref='app_elements'),
+}) 
+
+orm.mapper(App, app_table, properties={
+    'elements':orm.relation(AppElements, backref='app', cascade='all'),
+})        
+                               
 orm.mapper(Section, section_table, properties={
     'sections':orm.relation(Section, remote_side = [section_table.c.parent_section_id], cascade='all'),
     'items':orm.relation(Item, backref='section', cascade='all'),

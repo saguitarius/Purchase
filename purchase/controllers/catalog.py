@@ -7,9 +7,17 @@ from pylons.controllers.util import abort, redirect
 
 from purchase.lib.base import BaseController, render
 
+import purchase.lib.helpers as h
+
+from purchase.lib import auth
+from authkit.users.sqlalchemy_driver import UsersFromDatabase
+from authkit.authorize.pylons_adaptors import authorize
+from authkit.authorize.pylons_adaptors import authorized
+from authkit.permissions import ValidAuthKitUser
+from authkit.permissions import HasAuthKitRole
+
 import purchase.model as model
 import purchase.model.meta as meta
-import purchase.lib.helpers as h
 
 import formencode
 from formencode import htmlfill
@@ -17,8 +25,6 @@ from pylons.decorators import validate
 from pylons.decorators.rest import restrict
 from sqlalchemy import delete
 import datetime
-
-from authkit.authorize.pylons_adaptors import authorize
 
 log = logging.getLogger(__name__)
 
@@ -84,6 +90,10 @@ class NewItemForm(formencode.Schema):
     price = formencode.validators.Number(not_empty=True)
 
 class CatalogController(BaseController):
+    
+    @authorize(ValidAuthKitUser())
+    def __before__(self):
+        pass
 
     def index(self):
         "Returns list of main sections (inherited from Home)"
@@ -115,14 +125,15 @@ class CatalogController(BaseController):
         c.current_section = section_q.filter_by(id = id).first()
         breadcrumbs(c.current_section.id)
         
-        item_q = meta.Session.query(model.Item)
-        c.section_items = item_q.filter_by(section_id = c.current_section.id)
+        # item_q = meta.Session.query(model.Item)
+        # c.section_items = item_q.filter_by(section_id = c.current_section.id)
+        # Just using ORM relation instead of another query
+        c.section_items = c.current_section.items
             
         return render('/derived/catalog/section.html')
         #except:
             #h.redirect(url(controller='catalog', action='section', id='1'))
     
-    @authorize(h.auth.is_valid_user)        
     def new_section(self):
         "Renders form for creating a section"
         section_q = meta.Session.query(model.Section)
@@ -151,7 +162,6 @@ class CatalogController(BaseController):
             'parent_section': c.current_section.id,
             'description': c.current_section.description
         }
-        #return render('/derived/catalog/edit.html')
         return htmlfill.render(render('/derived/catalog/edit_section.html'), values)
     
     @validate(schema=EditSectionForm(), form='edit_section')

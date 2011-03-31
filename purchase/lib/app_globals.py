@@ -16,3 +16,7 @@ class Globals(object):
 
         """
         self.cache = CacheManager(**parse_cache_config_options(config))
+        self.current_campaign_id = 0
+        self.current_campaign_start_date = 0
+        self.current_campaign_end_date = 0
+        self.user_id = 0

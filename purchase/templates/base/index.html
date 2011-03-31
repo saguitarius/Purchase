@@ -9,6 +9,8 @@
 </head>
 <body>
     ${self.account()}
+    ${self.campaign()}
+    <hr>
     ${self.heading()}
     ${self.header()}
     ${next.body()}
@@ -24,7 +26,15 @@
     % else:
         <p><a href="${h.url('signin')}">Войти</a></p>
     % endif
-    <hr>
+</%def>
+
+<%def name="campaign()">
+    
+    % if (app_globals.current_campaign_id == 0):
+        <p>В данный момент не запущено кампаний, id = ${app_globals.current_campaign_id}</p>
+    % else:
+        <p>Запущена заявочная кампания, id = ${app_globals.current_campaign_id}. Срок проведения: с <b>${app_globals.current_campaign_start_date}</b> по <b>${app_globals.current_campaign_end_date}</b>.</p>
+    % endif
 </%def>
 
 <%def name="title()">
@@ -46,7 +56,9 @@
 <%def name="footer()">
     <p>
         <a href="${h.url('/')}">[Каталог]</a> |
-        <a href="${h.url(controller='account', action='index')}">[Пользователи]</a> |
+        <a href="${h.url(controller='app', action='index')}">[Заявка]</a> |  
+        <a href="${h.url(controller='campaign', action='index')}">[Кампании]</a> |     
+        <a href="${h.url(controller='account', action='index')}">[Пользователи]</a> |  
         <a href="#top">[Наверх]</a>
     </p>
 </%def>

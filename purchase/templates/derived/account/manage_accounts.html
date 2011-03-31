@@ -1,0 +1,108 @@
+<%inherit file="/base/index.html"/>
+
+<%def name="title()">Управление пользователями</%def>
+<%def name="heading()"><h1>Управление пользователями</h1></%def>
+
+${user_list()}
+${group_list()}
+
+<%def name="user_list()">
+    <h2>Пользователи</h2>
+    
+    <table border="1" width="100%">
+        <tr>
+            <th>№</th>
+            <th>Имя</th>
+            <th>Группа</th>
+            <th>Права</th>
+            <th>Действия</th>
+        </tr>
+    <% counter=0 %>
+    % for user in c.users.list_users():
+        <% counter += 1 %>
+        <tr>
+            <td>${counter}</td>
+            <td>${user}</td>     
+            <%
+                try:
+                    group = c.users.user_group(user)
+                except:
+                    group = ''
+            %>
+            <td>${group}</td>
+            <td>
+                % for role in c.users.user_roles(user):
+                    ${role}
+                % endfor
+            </td>
+            <td><a href="${h.url(username=user, controller='account', action='edit_user_form')}">Изменить</a> |
+                <a href="${h.url(username=user, controller='account', action='delete_user')}">Удалить</a>
+            </td>
+        </tr>
+    % endfor
+    </table>
+    <p><a href="${h.url(controller='account', action='add_user_form')}">Добавить пользователя</a></p>
+</%def>
+
+<%def name="group_list()">
+    <h2>Группы</h2>
+    <table border="1" width="100%">
+        <tr>
+            <th>№</th>
+            <th>Название</th>
+            <th>Начальник</th>
+            <th>Действия</th>
+        </tr>
+    <% counter=0 %>
+    % for group in c.users.list_groups():
+        <% counter += 1 %>
+        <tr>
+            <td>${counter}</td>
+            <td>${group}</td>   
+                <%
+                    try:
+                        boss = c.boss_list[group]
+                    except:
+                        boss = ''
+                %>
+                    <td>${boss}</td>
+            <td><a href="${h.url(controller='account', action='edit_group_form', group=group)}">Изменить</a> |
+                <a href="${h.url(controller='account', action='delete_group', group=group)}">Удалить</a>
+            </td>
+        </tr>
+    % endfor
+    </table>
+    
+    <h3>Добавить группу</h3>
+    ${h.form_start(h.url(controller='account', action='add_group'), method="post")}
+        ${h.field(
+            "Название",
+            h.text(name='group'),
+            required=True,
+        )}
+        ${h.field(field=h.submit(value="Добавить группу", name='submit'))}
+    ${h.form_end()}
+</%def>
+
+<%def name="roles_list()">
+    <h2>Права</h2>
+    <table border="1" width="100%">
+        <tr>
+            <th>№</th>
+            <th>Имя</th>
+            <th>Действия</th>
+        </tr>
+    <% counter=0 %>
+    % for group in c.users.list_roles():
+        <% counter += 1 %>
+        <tr>
+            <td>${counter}</td>
+            <td>${group}</td>    
+            <td><a href="${h.url(controller='account', action='edit_role')}">Изменить</a> |
+                <a href="${h.url(controller='account', action='delete_role')}">Удалить</a>
+            </td>
+        </tr>
+    % endfor
+    </table>
+    <p><a href="${h.url(controller='account', action='add_role')}">Добавить права</a></p>
+</%def>

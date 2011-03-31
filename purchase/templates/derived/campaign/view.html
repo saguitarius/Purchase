@@ -1,0 +1,28 @@
+<%inherit file="/base/index.html"/>
+
+<%def name="title()">Заявочные кампании</%def>
+<%def name="heading()"><h1>Заявочные кампании</h1></%def>
+
+<h2>Текущая кампания</h2>
+% if c.current_campaign:
+    <p>Дата начала: ${c.current_campaign.start_date}</p>
+    <p>Дата окончания: ${c.current_campaign.start_date}</p>
+    <p>Описание: ${c.current_campaign.description}</p>
+    <p><a href="${h.url(controller='campaign', action='info', id=c.current_campaign.id)}">Информация о кампании</a></p>
+% else:
+    В данный момент заявочная кампания не запущена. <a href="${h.url(controller='campaign', action='new')}">Создание заявочной кампании</a>
+% endif
+<br />
+
+<h3>Прошедние кампании</h3>
+% if c.finished_inactive_campaign == []:
+    Нет кампаний для отображения
+% else:
+    % for campaign in c.finished_inactive_campaign:
+        <p>Дата начала: ${campaign.start_date}</p>
+        <p>Дата окончания: ${campaign.end_date}</p>
+        <p>Описание: ${campaign.description}</p>
+        <p><a href="${h.url(controller='campaign', action='info', id=campaign.id)}">Информация о кампании</a></p>
+        <br />
+    % endfor
+% endif

@@ -1,0 +1,23 @@
+<%inherit file="/base/index.html"/>
+
+<%def name="title()">Изменение группы</%def>
+<%def name="heading()"><h1>Изменение группы ${c.group}</h1></%def>
+
+${h.form_start(h.url(controller='account', action='edit_group', group=c.group), method="post")}
+    ${h.field(
+        "Название",
+        h.text(name='group'),
+        required=True,
+    )}    
+    ${h.field(
+        u"Начальник",
+        h.select(
+            "boss",
+            id='boss',
+            options=c.users_in_group_list,
+            selected_values=c.boss,
+        ),
+        required=True
+    )}
+    ${h.field(field=h.submit(value="Изменить", name='submit'))}
+${h.form_end()}

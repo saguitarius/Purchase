@@ -32,7 +32,7 @@ def setup_app(command, conf, vars):
     # Adding users, groups, roles
     users.role_create("admin")
     users.role_create("boss")
-    users.role_create("bigboss")
+    users.role_create("director")
     users.role_create("user")
     
     users.group_create(u"SOTO-50")
@@ -51,9 +51,9 @@ def setup_app(command, conf, vars):
     users.user_add_role("boss2", role="boss")
     users.user_set_group("boss2", group="OLM-15")
     
-    users.user_create("bigboss", password="bigboss")
-    users.user_add_role("bigboss", role="bigboss")
-    users.user_set_group("bigboss", group="admin")
+    users.user_create("director", password="director")
+    users.user_add_role("director", role="director")
+    users.user_set_group("director", group="admin")
     
     users.user_create("user1", password="user1")
     users.user_add_role("user1", role="user")
@@ -71,6 +71,42 @@ def setup_app(command, conf, vars):
     users.user_add_role("user4", role="user")
     users.user_set_group("user4", group="OLM-15")
     
+    
+    # Adding units
+    log.info("Adding units...")
+    unit_1 = model.Unit()
+    unit_1.name = u'шт.'
+    meta.Session.add(unit_1)
+    meta.Session.flush()
+    
+    # Adding needs
+    log.info("Adding needs...")
+    needs_1 = model.Needs()
+    needs_1.name = u'Закупка нового'
+    meta.Session.add(needs_1)
+    meta.Session.flush()    
+
+    needs_2 = model.Needs()
+    needs_2.name = u'Обновление старого'
+    meta.Session.add(needs_2)
+    meta.Session.flush()  
+    
+    # Adding finsources
+    log.info("Adding finsources...")
+    finsource_1 = model.FinSource()
+    finsource_1.name = u'Накладные расходы'
+    meta.Session.add(finsource_1)
+    meta.Session.flush()    
+    
+    finsource_2 = model.FinSource()
+    finsource_2.name = u'Тема №1'
+    meta.Session.add(finsource_2)
+    meta.Session.flush()        
+    
+    finsource_3 = model.FinSource()
+    finsource_3.name = u'Тема №2'
+    meta.Session.add(finsource_3)
+    meta.Session.flush()  
     
     # Adding sections
     log.info("Adding main sections...")
@@ -146,13 +182,6 @@ def setup_app(command, conf, vars):
     meta.Session.add(section_amd)
     meta.Session.flush()
     
-    # Adding units
-    log.info("Adding units...")
-    unit_1 = model.Unit()
-    unit_1.name = u'шт.'
-    meta.Session.add(unit_1)
-    meta.Session.flush()
-    
     # Adding items
     log.info("Adding items...")
     item_1 = model.Item()
@@ -173,6 +202,36 @@ def setup_app(command, conf, vars):
     item_2.unit_id = '1'
     item_2.price = '4500'
     meta.Session.add(item_2)
+    meta.Session.flush()
+
+    item_3 = model.Item()
+    item_3.brand = u'Intel'
+    item_3.model = u'Core 2 Duo E7500'
+    item_3.description = u'2.93ГГц, 3МБ, FSB 1066МГц, LGA775, OEM'
+    item_3.section_id = '11'
+    item_3.unit_id = '1'
+    item_3.price = '3280'
+    meta.Session.add(item_3)
+    meta.Session.flush()
+    
+    item_4 = model.Item()
+    item_4.brand = u'Intel'
+    item_4.model = u'Core i3-2100'
+    item_4.description = u'3.10ГГц, 3МБ, LGA1155, OEM'
+    item_4.section_id = '11'
+    item_4.unit_id = '1'
+    item_4.price = '5500'
+    meta.Session.add(item_4)
+    meta.Session.flush()
+    
+    item_5 = model.Item()
+    item_5.brand = u'Intel'
+    item_5.model = u'Core 2 Quad Q9300'
+    item_5.description = u'2.50ГГц, 6МБ, FSB 1333МГц, LGA775, ОЕМ'
+    item_5.section_id = '11'
+    item_5.unit_id = '1'
+    item_5.price = '3500'
+    meta.Session.add(item_5)
     meta.Session.flush()
     
     log.info("Everything OK...")

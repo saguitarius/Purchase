@@ -13,30 +13,32 @@ ${main_sections()}
 </%def>
 
 <%def name="section_items()">
-    <p><b>Объекты данного раздела:</b></p>
-    <table border="1" width="100%">
-        <tr>
-            <th>Марка</th>
-            <th>Модель</th>
-            <th>Описание</th>
-            <th>Цена</th>
-            <th>Дата изменения</th>
-            <th>Добавить<br />в заявку</th>
-            <th>Действия</th>
-        </tr>
-    % for item in c.section_items:
-        <tr>
-            <td>${item.brand}</td>
-            <td>${item.model}</td>
-            <td>${item.description}</td>
-            <td>${item.price}</td>
-            <td>${item.edited}</td>
-            <td><a href="$h.url(controller='application', action='add_item')">X</a></td>
-            <td><a href="${h.url(id=item.id, controller='catalog', action='edit_item')}">Изменить</a>
-                <a href="${h.url(controller='catalog', action='delete_item', id=item.id)}">Удалить</a></td>
-        </tr>
-    % endfor
-    </table>
+    % if c.section_items:
+        <p><b>Объекты данного раздела:</b></p>
+        <table border="1" width="100%">
+            <tr>
+                <th>Марка</th>
+                <th>Модель</th>
+                <th>Описание</th>
+                <th>Цена</th>
+                <th>Дата изменения</th>
+                <th>Добавить<br />в заявку</th>
+                <th>Действия</th>
+            </tr>
+        % for item in c.section_items:
+            <tr>
+                <td>${item.brand}</td>
+                <td>${item.model}</td>
+                <td>${item.description}</td>
+                <td>${item.price}</td>
+                <td>${item.edited}</td>
+                <td><a href="${h.url(controller='application', action='add_item')}">X</a></td>
+                <td><a href="${h.url(id=item.id, controller='catalog', action='edit_item')}">Изменить</a>
+                    <a href="${h.url(controller='catalog', action='delete_item', id=item.id)}">Удалить</a></td>
+            </tr>
+        % endfor
+        </table>
+    % endif
 </%def>
 
 <%def name="section_description()">
