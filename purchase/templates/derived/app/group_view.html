@@ -1,0 +1,176 @@
+<%inherit file="/base/index.html"/>
+
+<%def name="title()">Заявка по отделу ${c.boss_group_view}</%def>
+<%def name="heading()"><h1>Заявка по отделу ${c.boss_group_view}</h1></%def>
+
+        <table border="1" width="100%">
+            <tr>
+                <th rowspan="2" width="200">    Наименование</th>
+                <th rowspan="2" width="50">     Ед. Изм</th>
+                <th colspan="4">                Квартал</th>
+                <th rowspan="2" width="70">     Общее<br />кол-во</th>
+                <th rowspan="2" width="70">     Цена (руб.)</th>
+                <th rowspan="2" width="70">     Сумма (руб.)</th>
+                <th rowspan="2" width="80">     Источник<br />финансирования</th>
+                <th rowspan="2" width="80">     Для каких нужд</th>
+                <th rowspan="2" width="80">     Место<br />внедрения</th>
+                <th rowspan="2" width="120">    Примечание</th>
+                <th rowspan="2" width="120">    Действия</th>
+            </tr>
+            <tr>
+                <th width="50">1</th> 
+                <th width="50">2</th>
+                <th width="50">3</th>
+                <th width="50">4</th>               
+            </tr>
+        % for app_element in c.group_app_elements:
+            <tr>
+                <td>
+                    ${app_element.items.brand} ${app_element.items.model}
+                        % if app_element.status == 1:
+                            <i><b>Изменено</b></i>
+                        % endif
+                        % if app_element.status == 2:
+                            <i><b>Заменено</b></i>
+                        % endif
+                        % if app_element.status == 3:
+                            <i><b>Удалено</b></i>
+                        % endif
+                </td>
+                <td>${app_element.items.units.name}</td>
+                <td>${app_element.quarter1}</td>
+                <td>${app_element.quarter2}</td>
+                <td>${app_element.quarter3}</td>
+                <td>${app_element.quarter4}</td>
+                <td>${app_element.amount}</td>
+                <td>${app_element.items.price}</td>
+                <td>
+                    % if app_element.status == 3:
+                        <i><b>${app_element.price}</b></i>
+                    % else:
+                        ${app_element.price}
+                    % endif
+                </td>
+                <td>${app_element.finsources.name}</td>
+                <td>${app_element.needss.name}</td>
+                <td>
+                    ##${app_element.place}
+                    % for place in c.available_groups:
+                    %   if place[0] == app_element.place:
+                            ${place[1]}
+                    %   endif
+                    % endfor
+                </td>
+                <td>${app_element.note}</td>
+                <th>
+                    % if (app_element.status == 0) or (app_element.status == 1) or (app_element.status == 2):
+                        <a href="${h.url(controller='app', action='edit_item_group_form', id=app_element.id)}">Изменить</a><br />
+                        <a href="${h.url(controller='app', action='change_item_group_form', id=app_element.id)}">Заменить</a><br />
+                        <a href="${h.url(controller='app', action='delete_item_group', id=app_element.id)}">Удалить</a><br />
+                    % endif
+                    </form>
+                    % if app_element.status == 3:
+                        <a href="${h.url(controller='app', action='restore_item_group', id=app_element.id)}">Восстановить</a><br />
+                    % endif     
+                </th>           
+            </tr>
+        % endfor
+        
+            <tr>
+                <th>Итого:</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>${c.total_price}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        
+<p><a href="${h.url(controller='app', action='app_to_director')}">Утвердить заявку по отделу ${c.boss_group_view}</a></p>
+        
+###        <br /><hr><br />
+###
+###        <table border="1" width="100%">
+###            <tr>
+###                <th rowspan="2" width="200">    Наименование</th>
+###                <th rowspan="2" width="50">     Ед. Изм</th>
+###                <th colspan="4">                Квартал</th>
+###                <th rowspan="2" width="70">     Общее<br />кол-во</th>
+###                <th rowspan="2" width="70">     Цена (руб.)</th>
+###                <th rowspan="2" width="70">     Сумма (руб.)</th>
+###                <th rowspan="2" width="80">     Источник<br />финансирования</th>
+###                <th rowspan="2" width="80">     Для каких нужд</th>
+###                <th rowspan="2" width="80">     Место<br />внедрения</th>
+###                <th rowspan="2" width="120">    Примечание</th>
+###                <th rowspan="2" width="100">    Действия</th>
+###            </tr>
+###            <tr>
+###                <th width="50">1</th> 
+###                <th width="50">2</th>
+###                <th width="50">3</th>
+###                <th width="50">4</th>               
+###            </tr>
+###        % for app_element in c.group_app_elements:                
+###            <tr>
+###                <td>${app_element.id} ${app_element.items.brand} ${app_element.items.model}
+###                    % if app_element.status == 3:
+###                        <i><b>Удалено</b></i>
+###                    % endif
+###                </td>                
+###                <td>${app_element.items.units.name}</td>
+###                <td>${h.text(name='quarter1_el%s'%(app_element.id), size=2, disabled=True)}</td>
+###                <td>${h.text(name='quarter2_el%s'%(app_element.id), size=2, disabled=True)}</td>
+###                <td>${h.text(name='quarter3_el%s'%(app_element.id), size=2, disabled=True)}</td>
+###                <td>${h.text(name='quarter4_el%s'%(app_element.id), size=2, disabled=True)}</td>
+###                <td>${c.element__amount[app_element.id]}</td> 
+###                <td>${app_element.items.price}</td>
+###                <td>
+###                % if app_element.status == 3:
+###                    <i><b>${c.element__price[app_element.id]}</b></i>
+###                % else:
+###                    ${c.element__price[app_element.id]}
+###                % endif               
+###                </td> 
+###                <td>${h.select(name='finsource_el%s'%(app_element.id), options=c.available_finsource, selected_values=[], disabled=True)}</td>
+###                <td>${h.select(name='needs_el%s'%(app_element.id), options=c.available_needs, selected_values=[], disabled=True)}</td>
+###                <td>${h.select(name='place_el%s'%(app_element.id), options=c.available_groups, selected_values=[], disabled=True)}</td>
+###                <td>${h.textarea(name='note_el%s'%(app_element.id), rows=3, cols=10, disabled=True)}</td>
+###                <th>
+###                    % if (app_element.status == 0) or (app_element.status == 1) or (app_element.status == 2):
+###                        <a href="${h.url(controller='app', action='save_item_group', id=app_element.id)}">Обновить</a><br />
+###                        <a href="${h.url(controller='app', action='edit_item_group', id=app_element.id)}">Изменить</a><br />
+###                        <a href="${h.url(controller='app', action='delete_item_group', id=app_element.id)}">Удалить</a><br />
+###                    % endif
+###                    </form>
+###                    % if app_element.status == 3:
+###                        <a href="${h.url(controller='app', action='restore_item_group', id=app_element.id)}">Восстановить</a><br />
+###                    % endif
+###                </th>
+###            </tr>
+###        % endfor
+###        
+###            <tr>
+###            <th>Итого:</th>
+###            <td></td>
+###            <td></td>
+###            <td></td>
+###            <td></td>
+###            <td></td>
+###            <td></td>
+###            <td></td>
+###            <td>${c.total_price}</td>
+###            <td></td>
+###            <td></td>
+###            <td></td>
+###            <td></td>
+###            <td></td>
+###            </tr>
+###        </table>

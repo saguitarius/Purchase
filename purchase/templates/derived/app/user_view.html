@@ -1,0 +1,132 @@
+<%inherit file="/base/index.html"/>
+
+<%def name="title()">Заявка сотрудника</%def>
+<%def name="heading()"><h1>Заявка сотрудника</h1></%def>
+
+<h2>Текущая заявка</h2>
+<b>id:</b> ${c.current_app.id}<br />
+<b>author_id:</b> ${c.current_app.author_id}<br />
+###<b>Год:</b> ${c.current_app.year}<br />
+<b>статус:</b> ${c.current_app.status}<br />
+<b>campaign_id:</b> ${c.current_app.campaign_id}<br />
+###<b>Информация:</b> ${c.current_app.info}<br />
+###<b>Дата создания:</b> ${c.current_app.created}<br />
+###<b>Дата изменения:</b> ${c.current_app.edited}<br />
+
+<h2>Содержимое текущей заявки</h2>
+
+${h.form_start(h.url(controller='app', action='save_user_app', id=c.current_app.id), method="post")}
+
+        <table border="1" width="100%">
+            <tr>
+                <th rowspan="2" width="200">    Наименование</th>
+                <th rowspan="2" width="50">     Ед. Изм</th>
+                <th colspan="4">                Квартал</th>
+                <th rowspan="2" width="70">     Общее<br />кол-во</th>
+                <th rowspan="2" width="70">     Цена (руб.)</th>
+                <th rowspan="2" width="70">     Сумма (руб.)</th>
+                <th rowspan="2" width="80">     Источник<br />финансирования</th>
+                <th rowspan="2" width="80">     Для каких нужд</th>
+                <th rowspan="2" width="80">     Место<br />внедрения</th>
+                <th rowspan="2" width="120">    Примечание</th>
+                <th rowspan="2" width="120">    Статус</th>
+            </tr>
+            <tr>
+                <th width="50">1</th> 
+                <th width="50">2</th>
+                <th width="50">3</th>
+                <th width="50">4</th>               
+            </tr>
+        % for app_element in c.current_app_elements:
+            <tr>
+                <td>${app_element.id} ${app_element.items.brand} ${app_element.items.model} 
+                    % if (c.current_app.status == 1) or (h.auth.authorized(h.auth.has_director_role)):
+                        (<a href="${h.url(controller='app', action='delete_item', id=app_element.id)}">удалить</a>)
+                    % endif
+                </td>
+                <td>${app_element.items.units.name}</td>
+                <td>${h.text(name='quarter1_el%s'%(app_element.id), size=2)}</td>
+                <td>${h.text(name='quarter2_el%s'%(app_element.id), size=2)}</td>
+                <td>${h.text(name='quarter3_el%s'%(app_element.id), size=2)}</td>
+                <td>${h.text(name='quarter4_el%s'%(app_element.id), size=2)}</td>
+                <td>${c.element_amount[app_element.id]}</td>
+                <td>${app_element.items.price}</td>
+                    % if app_element.status == 3:
+                    <td><i><b>${c.element_price[app_element.id]}</b></i></td>
+                    % else:
+                    <td>${c.element_price[app_element.id]}</td>
+                    % endif
+                <td>${h.select(name='finsource_el%s'%(app_element.id), options=c.available_finsource, selected_values=[],)}</td>                
+                <td>${h.select(name='needs_el%s'%(app_element.id), options=c.available_needs, selected_values=[],)}</td>
+                <td>${h.select(name='place_el%s'%(app_element.id), options=c.available_groups, selected_values=[],)}</td>
+                <td>${h.textarea(name='note_el%s'%(app_element.id), rows=3, cols=10)}</td>
+                <td>
+                    % if app_element.status == 1:
+                        Изменено
+                    % endif
+                    % if app_element.status == 2:
+                        Заменено
+                    % endif
+                    % if app_element.status == 3:
+                        Удалено
+                    % endif
+                    % if app_element.status == 4:
+                        Утверждено
+                    % endif
+                    % if app_element.status == 5:
+                        Закуплено
+                    % endif
+                    % if app_element.status == 6:
+                        Закуплено, изменено
+                    % endif
+                    % if app_element.status == 7:
+                        Закуплено, заменено
+                    % endif
+                    % if app_element.status == 8:
+                        Не закуплено
+                    % endif
+                </td>
+            </tr>
+        % endfor
+        
+            <tr>
+                <th>Итого:</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>${c.total_price}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        
+<br />
+% if (c.current_app.status == 1) or (h.auth.authorized(h.auth.has_director_role)):
+    ${h.field(field=h.submit(value=u"Внести изменения в заявку", name='submit'))}
+% endif
+% if c.current_app.status == 1 and (not h.auth.authorized(h.auth.has_director_role)):
+    <p><a href="${h.url(controller='app', action='app_to_boss')}">Передача заявки на рассмотрение</a></p>
+% endif
+<p>
+% if c.current_app.status == 2:
+    Ваша заявка отправлена на рассмотрение.
+% endif
+% if c.current_app.status == 3:
+    Ваша заявка утверждена ответственным по отделу.
+% endif
+% if (c.current_app.status == 4) and not (h.auth.authorized(h.auth.has_director_role)):
+    Ваша заявка утверждена ответственным по предприятию.
+% endif
+</p>
+% if h.auth.authorized(h.auth.has_director_role):
+    <p><a href="${h.url(controller='app', action='director_app_to_global')}">Добавить к общей заявке</a></p>
+% endif
+
+<h2>Предыдущие заявки</h2>

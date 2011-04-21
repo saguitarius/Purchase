@@ -12,7 +12,9 @@ ${group_list()}
     <table border="1" width="100%">
         <tr>
             <th>№</th>
+            <th>Логин</th>
             <th>Имя</th>
+            <th>e-mail</th>
             <th>Группа</th>
             <th>Права</th>
             <th>Действия</th>
@@ -22,10 +24,13 @@ ${group_list()}
         <% counter += 1 %>
         <tr>
             <td>${counter}</td>
-            <td>${user}</td>     
+            <td>${user}</td>  
+            <td>${c.users.user_view(user)}</td>   
+            <td>${c.users.user_mail(user)}</td> 
             <%
                 try:
-                    group = c.users.user_group(user)
+                    group_tmp = c.users.user_group(user)
+                    group = c.users.group_view(group_tmp)
                 except:
                     group = ''
             %>
@@ -50,6 +55,7 @@ ${group_list()}
         <tr>
             <th>№</th>
             <th>Название</th>
+            <th>Отображение</th>
             <th>Начальник</th>
             <th>Действия</th>
         </tr>
@@ -59,13 +65,14 @@ ${group_list()}
         <tr>
             <td>${counter}</td>
             <td>${group}</td>   
+            <td>${c.users.group_view(group)}</td>
                 <%
                     try:
                         boss = c.boss_list[group]
                     except:
                         boss = ''
                 %>
-                    <td>${boss}</td>
+            <td>${boss}</td>
             <td><a href="${h.url(controller='account', action='edit_group_form', group=group)}">Изменить</a> |
                 <a href="${h.url(controller='account', action='delete_group', group=group)}">Удалить</a>
             </td>

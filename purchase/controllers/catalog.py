@@ -26,6 +26,8 @@ from pylons.decorators.rest import restrict
 from sqlalchemy import delete
 import datetime
 
+from pylons import app_globals
+
 log = logging.getLogger(__name__)
 
 class UniqueSection(formencode.validators.FancyValidator):
@@ -93,6 +95,26 @@ class CatalogController(BaseController):
     
     @authorize(ValidAuthKitUser())
     def __before__(self):
+        '''
+            TEMP!!!
+        '''
+        # Identify user uid and put it into global var
+        user_q = meta.Session.query(model.User)
+        user = user_q.filter_by(username = request.environ['REMOTE_USER']).first()
+        app_globals.user_id = user.uid
+        app_globals.user_group = user.group.view
+        app_globals.user_view = user.view
+            
+        campaign_q = meta.Session.query(model.Campaign)
+        c.current_campaign = campaign_q.filter_by(status = '1').first()
+        # Check if there is an active campaign
+        if c.current_campaign:
+            app_globals.current_campaign_id = c.current_campaign.id
+            app_globals.current_campaign_start_date = c.current_campaign.start_date
+            app_globals.current_campaign_end_date = c.current_campaign.end_date        
+        '''
+            TEMP!!!
+        '''
         pass
 
     def index(self):
@@ -130,6 +152,11 @@ class CatalogController(BaseController):
         # Just using ORM relation instead of another query
         c.section_items = c.current_section.items
             
+        # To disable "Add" link
+        app_q = meta.Session.query(model.App)
+        c.current_app_status = app_q.filter_by(author_id = app_globals.user_id).filter_by(campaign_id = app_globals.current_campaign_id).first().status
+        
+        app_globals.current_section_id = c.current_section.id
         return render('/derived/catalog/section.html')
         #except:
             #h.redirect(url(controller='catalog', action='section', id='1'))

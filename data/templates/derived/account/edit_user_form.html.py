@@ -4,7 +4,7 @@ UNDEFINED = runtime.UNDEFINED
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 6
-_modified_time = 1299060460.095
+_modified_time = 1302788538.0320001
 _template_filename='D:\\PyProjects\\Purchase\\purchase\\templates/derived/account/edit_user_form.html'
 _template_uri='/derived/account/edit_user_form.html'
 _template_cache=cache.Cache(__name__, _modified_time)
@@ -42,13 +42,29 @@ def render_body(context,**pageargs):
         __M_writer(u'\r\n    ')
         # SOURCE LINE 7
         __M_writer(escape(h.field(
+        "Имя",
+        h.text(name='view'),
+        required=True,
+    )))
+        # SOURCE LINE 11
+        __M_writer(u'\r\n    ')
+        # SOURCE LINE 12
+        __M_writer(escape(h.field(
+        "E-mail",
+        h.text(name='mail'),
+        required=True,
+    )))
+        # SOURCE LINE 16
+        __M_writer(u'\r\n    ')
+        # SOURCE LINE 17
+        __M_writer(escape(h.field(
         "Пароль",
         h.password(name='password'),
         required=True,
     )))
-        # SOURCE LINE 11
+        # SOURCE LINE 21
         __M_writer(u'    \r\n    ')
-        # SOURCE LINE 12
+        # SOURCE LINE 22
         __M_writer(escape(h.field(
         u"Группа",
         h.select(
@@ -59,28 +75,16 @@ def render_body(context,**pageargs):
         ),
         required=True
     )))
-        # SOURCE LINE 21
-        __M_writer(u'\r\n    ')
-        # SOURCE LINE 22
-        __M_writer(escape(h.field(
-        u"Права",
-        h.select(
-            "roles",
-            id='roles',
-            options=c.available_roles,
-            selected_values=c.roles,
-            multiple = True
-        ),
-    )))
         # SOURCE LINE 31
-        __M_writer(u'\r\n    ')
-        # SOURCE LINE 32
+        __M_writer(u'\r\n')
+        # SOURCE LINE 42
+        __M_writer(u'    ')
         __M_writer(escape(h.field(field=h.submit(value="Изменить", name='submit'))))
         __M_writer(u'\r\n')
-        # SOURCE LINE 33
+        # SOURCE LINE 43
         __M_writer(escape(h.form_end()))
         __M_writer(u'\r\n    \r\n')
-        # SOURCE LINE 37
+        # SOURCE LINE 47
         __M_writer(u'    \r\n    ')
         return ''
     finally:
@@ -92,9 +96,9 @@ def render_user_exists_print(context):
     try:
         c = context.get('c', UNDEFINED)
         __M_writer = context.writer()
-        # SOURCE LINE 35
+        # SOURCE LINE 45
         __M_writer(u'\r\n    <p>Username <b>')
-        # SOURCE LINE 36
+        # SOURCE LINE 46
         __M_writer(escape(c.username))
         __M_writer(u'</b> already exists.</p>    \r\n')
         return ''

@@ -10,6 +10,11 @@ ${h.form_start(h.url(controller='account', action='edit_group', group=c.group), 
         required=True,
     )}    
     ${h.field(
+        "Отображение",
+        h.text(name='view'),
+        required=True,
+    )}    
+    ${h.field(
         u"Начальник",
         h.select(
             "boss",

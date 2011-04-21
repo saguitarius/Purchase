@@ -1,16 +1,16 @@
 <%inherit file="/base/index.html"/>
 
-<%def name="title()">Sign In</%def>
-<%def name="heading()"><h1>Sign In</h1></%def>
+<%def name="title()">Вход в систему</%def>
+<%def name="heading()"><h1>Вход в систему</h1></%def>
 
 ${h.form_start('%s', method="post")}
     ${h.field(
-        "Username",
+        "Логин",
         h.text(name='username'),
     )}
     ${h.field(
-        "Password",
+        "Пароль",
         h.password(name='password'),
     )}
-    ${h.field(field=h.submit(value="Sign in", name='submit'))}
+    ${h.field(field=h.submit(value="Войти", name='submit'))}
 ${h.form_end()}

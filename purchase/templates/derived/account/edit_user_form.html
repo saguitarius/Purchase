@@ -5,6 +5,16 @@
 
 ${h.form_start(h.url(controller='account', action='edit_user', username=c.username), method="post")}
     ${h.field(
+        "Имя",
+        h.text(name='view'),
+        required=True,
+    )}
+    ${h.field(
+        "E-mail",
+        h.text(name='mail'),
+        required=True,
+    )}
+    ${h.field(
         "Пароль",
         h.password(name='password'),
         required=True,
@@ -19,16 +29,16 @@ ${h.form_start(h.url(controller='account', action='edit_user', username=c.userna
         ),
         required=True
     )}
-    ${h.field(
-        u"Права",
-        h.select(
-            "roles",
-            id='roles',
-            options=c.available_roles,
-            selected_values=c.roles,
-            #multiple = True
-        ),
-    )}
+##    ${h.field(
+##        u"Права",
+##        h.select(
+##            "roles",
+##            id='roles',
+##            options=c.available_roles,
+##            selected_values=c.roles,
+##            #multiple = True
+##        ),
+##    )}
     ${h.field(field=h.submit(value="Изменить", name='submit'))}
 ${h.form_end()}
     

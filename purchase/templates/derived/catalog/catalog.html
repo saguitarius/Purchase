@@ -8,7 +8,10 @@ ${main_sections()}
 
 <%def name="item_actions()">
     <p>
-    <a href="${h.url(controller='catalog', action='new_item', name=c.current_section.name)}">Добавить объект</a>
+    % if h.auth.authorized(h.auth.has_admin_role):
+        <a href="${h.url(controller='catalog', action='new_item', name=c.current_section.name)}">Добавить объект</a> |
+    % endif
+        <a href="${h.url(controller='catalog', action='propose_item', name=c.current_section.name)}">Предложить объект</a>
     </p>
 </%def>
 
@@ -22,8 +25,12 @@ ${main_sections()}
                 <th>Описание</th>
                 <th>Цена</th>
                 <th>Дата изменения</th>
-                <th>Добавить<br />в заявку</th>
-                <th>Действия</th>
+                % if (c.current_app_status == 1) or h.auth.authorized(h.auth.is_valid_user):
+                    <th>Добавить<br />в заявку</th>
+                % endif
+                % if h.auth.authorized(h.auth.has_admin_role):
+                    <th>Действия</th>
+                % endif
             </tr>
         % for item in c.section_items:
             <tr>
@@ -32,9 +39,13 @@ ${main_sections()}
                 <td>${item.description}</td>
                 <td>${item.price}</td>
                 <td>${item.edited}</td>
-                <td><a href="${h.url(controller='application', action='add_item')}">X</a></td>
-                <td><a href="${h.url(id=item.id, controller='catalog', action='edit_item')}">Изменить</a>
-                    <a href="${h.url(controller='catalog', action='delete_item', id=item.id)}">Удалить</a></td>
+                % if (c.current_app_status == 1) or h.auth.authorized(h.auth.is_valid_user):
+                    <th><a href="${h.url(controller='app', action='add_item', id=item.id,)}">Добавить</a></th>
+                % endif
+                % if h.auth.authorized(h.auth.has_admin_role):
+                    <td><a href="${h.url(controller='catalog', action='edit_item', id=item.id)}">Изменить</a>
+                        <a href="${h.url(controller='catalog', action='delete_item', id=item.id)}">Удалить</a></td>
+                % endif
             </tr>
         % endfor
         </table>
@@ -49,9 +60,11 @@ ${main_sections()}
 
 <%def name="section_actions()">
     <p>
-    <a href="${h.url(controller='catalog', action='new_section')}">Добавить раздел</a>  |
-    <a href="${h.url(controller='catalog', action='edit_section', id=c.current_section.id)}">Изменить раздел</a> |
-    <a href="${h.url(controller='catalog', action='delete_section', id=c.current_section.id)}">Удалить раздел</a>
+    % if h.auth.authorized(h.auth.has_admin_role):
+        <a href="${h.url(controller='catalog', action='new_section')}">Добавить раздел</a>  |
+        <a href="${h.url(controller='catalog', action='edit_section', id=c.current_section.id)}">Изменить раздел</a> |
+        <a href="${h.url(controller='catalog', action='delete_section', id=c.current_section.id)}">Удалить раздел</a>
+    % endif
     </p>
 </%def>
 
@@ -91,8 +104,6 @@ ${main_sections()}
     % endif
     % endfor
 </%def>
-
-
 
 <%def name="all_sec()">
     % for section in c.section:

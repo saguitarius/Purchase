@@ -39,13 +39,56 @@ log = logging.getLogger(__name__)
 class AddUserForm(formencode.Schema):
     allow_extra_fields = True
     filter_extra_fields = False
-    username = formencode.validators.String(not_empty=True)
-    password = formencode.validators.String(not_empty=True)
+    username = formencode.validators.PlainText(
+        not_empty=True,
+        messages={
+            'empty':u'Введите логин.',
+            'invalid':u'Логин может содержать только символы латинского алфавита, цифры и знак "_"'
+        })
+    view = formencode.validators.String(
+        not_empty=True,
+        messages={
+            'empty':u'Введите имя.',
+        })
+    mail = formencode.validators.Email(
+        not_empty=True,
+        messages={
+            'empty':u'Введите e-mail.',
+            'noAt':u'E-mail должен быть вида mail@example.com',
+            'badUsername': u'Неправильно введено имя (часть до @: %(username)s)',
+            'badDomain': u'Домен введён неверно (часть после @: %(domain)s)',
+            'domainDoesNotExist': u'Домен не существует (часть после @: %(domain)s)',
+        })
+    password = formencode.validators.PlainText(
+        not_empty=True,
+        messages={
+            'empty':u'Введите пароль.',
+            'invalid':u'Пароль может содержать только символы латинского алфавита, цифры и знак "_"'
+        })
     
 class EditUserForm(formencode.Schema):
     allow_extra_fields = True
     filter_extra_fields = False
-    password = formencode.validators.String(not_empty=True)
+    view = formencode.validators.String(
+        not_empty=True,
+        messages={
+            'empty':u'Введите имя.',
+        })
+    mail = formencode.validators.Email(
+        not_empty=True,
+        messages={
+            'empty':u'Введите e-mail.',
+            'noAt':u'E-mail должен быть вида mail@example.com',
+            'badUsername': u'Неправильно введено имя (часть до @: %(username)s)',
+            'badDomain': u'Домен введён неверно (часть после @: %(domain)s)',
+            'domainDoesNotExist': u'Домен не существует (часть после @: %(domain)s)',
+        })
+    password = formencode.validators.PlainText(
+        not_empty=True,
+        messages={
+            'empty':u'Введите пароль.',
+            'invalid':u'Пароль может содержать только символы латинского алфавита, цифры и знак "_"'
+        })
     
 class UniqueGroup(formencode.validators.FancyValidator):
     def _to_python(self, values, state):
@@ -58,13 +101,33 @@ class UniqueGroup(formencode.validators.FancyValidator):
 class AddGroupForm(formencode.Schema):
     allow_extra_fields = True
     filter_extra_fields = False
-    group = formencode.validators.String(not_empty=True)
+    group = formencode.validators.PlainText(
+        not_empty=True,
+        messages={
+            'empty':u'Введите название группы.',
+            'invalid':u'Название группы может содержать только символы латинского алфавита, цифры и знак "_"'
+        })
+    view = formencode.validators.String(
+        not_empty=True,
+        messages={
+            'empty':u'Введите название группы для отображения.',
+        })
     chained_validators = [UniqueGroup()]
 
 class EditGroupForm(formencode.Schema):
     allow_extra_fields = True
     filter_extra_fields = False
-    group = formencode.validators.String(not_empty=True)  
+    group = formencode.validators.PlainText(
+        not_empty=True,
+        messages={
+            'empty':u'Введите название группы.',
+            'invalid':u'Название группы может содержать только символы латинского алфавита, цифры и знак "_"'
+        }) 
+    view = formencode.validators.String(
+        not_empty=True,
+        messages={
+            'empty':u'Введите название группы для отображения.',
+        })
 
 class AccountController(BaseController):
     
@@ -86,10 +149,12 @@ class AccountController(BaseController):
             # This triggers the AuthKit middleware into displaying the sign-in form
             abort(401)
         else:
-            # Identify user uid and put it into global var
+            # Identify user uid and put it into global vars
             user_q = meta.Session.query(model.User)
-            user_id = user_q.filter_by(username = request.environ['REMOTE_USER']).first().uid
-            app_globals.user_id = user_id
+            user = user_q.filter_by(username = request.environ['REMOTE_USER']).first()
+            app_globals.user_id = user.uid
+            app_globals.user_group = user.group.view
+            app_globals.user_view = user.view
             
             campaign_q = meta.Session.query(model.Campaign)
             c.current_campaign = campaign_q.filter_by(status = '1').first()
@@ -118,9 +183,10 @@ class AccountController(BaseController):
                     '''
             # If none found, reset global vars
             else:
-                app_globals.current_campaign_id = 0
-                app_globals.current_campaign_start_date = 0
-                app_globals.current_campaign_end_date = 0           
+                #app_globals.current_campaign_id = 0
+                #app_globals.current_campaign_start_date = 0
+                #app_globals.current_campaign_end_date = 0 
+                pass          
             return render('/derived/account/signedin.html')
 
     def signout(self):
@@ -144,8 +210,10 @@ class AccountController(BaseController):
     def add_user_form(self):
         "Renders registration form, only Admin should do this"
         users = request.environ['authkit.users']
-        c.available_groups = users.list_groups()
-        c.available_roles = users.list_roles()
+        #c.available_groups = users.list_groups()[1:]
+        groups_q = meta.Session.query(model.Group)    
+        c.available_groups = [(group.name, group.view) for group in groups_q]
+        #c.available_roles = users.list_roles()
         return render('/derived/account/add_user_form.html')
     
     @authorize(HasAuthKitRole(['admin']))
@@ -153,18 +221,22 @@ class AccountController(BaseController):
     def add_user(self):
         "Adding new user to the database"
         users = request.environ['authkit.users']
+        c.available_groups = users.list_groups()[1:]
         available_roles = users.list_roles()
         if not users.user_exists(self.form_result['username']):
             users.user_create(self.form_result['username'], password=self.form_result['password'])
+            users.user_set_view(self.form_result['username'], self.form_result['view'])
+            users.user_set_mail(self.form_result['username'], self.form_result['mail'])
             users.user_set_group(self.form_result['username'], self.form_result['group'])
-            try:
-                for role in self.form_result['roles']:
-                    if role not in available_roles:
-                        users.user_add_role(self.form_result['username'], self.form_result['roles'])
-                    else:
-                        users.user_add_role(self.form_result['username'], role)
-            except:
-                pass
+#            try:
+#                for role in self.form_result['roles']:
+#                    if role not in available_roles:
+#                        users.user_add_role(self.form_result['username']), self.form_result['roles'])
+#                    else:
+#                        users.user_add_role(self.form_result['username']), role)
+#            except:
+#                pass
+            users.user_add_role(self.form_result['username'], 'user')
             meta.Session.commit()
             redirect(url(h.url(controller='account', action='manage_accounts')))
         else:
@@ -176,38 +248,51 @@ class AccountController(BaseController):
         "Renders registration form, only Admin should do this"
         users = request.environ['authkit.users']
         c.username = request.params['username']
-        c.password = users.user_password(request.params['username'])
-        c.available_groups = users.list_groups()
+        c.password = users.user_password(c.username)
+        c.view = (users.user_view(c.username))
+        c.mail = (users.user_mail(c.username))
+        #c.available_groups = users.list_groups()[1:]
+        groups_q = meta.Session.query(model.Group)    
+        c.available_groups = [(group.name, group.view) for group in groups_q]
         try:
             c.group = users.user_group(request.params['username'])
         except:
             c.group = ''  
-        c.available_roles = users.list_roles()
-        c.roles = users.user_roles(request.params['username'])
+        #c.available_roles = users.list_roles()
+#       c.roles = users.user_roles(request.params['username'])
         values = {
             'password': c.password,
             'group': c.group,
-            'roles': c.roles,
+            'mail': c.mail,
+            'view': c.view,
+#            'roles': c.roles,
         }
         return htmlfill.render(render('/derived/account/edit_user_form.html'), values)
     
     @authorize(HasAuthKitRole(['admin']))
     @validate(schema=EditUserForm(), form='edit_user_form', auto_error_formatter=custom_formatter)
     def edit_user(self):
-        "Adding new user to the database"
+        "Deleting old user and Adding new user to the database"
         users = request.environ['authkit.users']
-        available_roles = users.list_roles()
+        #available_roles = users.list_roles()
+        try:
+            user_role = users.user_roles(request.params['username'])[0]
+        except:
+            user_role = 'user'
         users.user_delete(request.params['username'])
         users.user_create(request.params['username'], password=self.form_result['password'])
+        users.user_set_view(request.params['username'], self.form_result['view'])
+        users.user_set_mail(request.params['username'], self.form_result['mail'])        
         users.user_set_group(request.params['username'], self.form_result['group'])
-        try:
-            for role in self.form_result['roles']:
-                if role not in available_roles:
-                    users.user_add_role(request.params['username'], self.form_result['roles'])
-                else:
-                    users.user_add_role(request.params['username'], role)
-        except:
-            pass
+        users.user_add_role(request.params['username'], user_role)
+#        try:
+#            for role in self.form_result['roles']:
+#                if role not in available_roles:
+#                    users.user_add_role(request.params['username'], self.form_result['roles'])
+#                else:
+#                    users.user_add_role(request.params['username'], role)
+#        except:
+#            pass
         meta.Session.commit()
         redirect(url(h.url(controller='account', action='manage_accounts')))
     
@@ -233,6 +318,7 @@ class AccountController(BaseController):
     def edit_group_form(self):
         users = request.environ['authkit.users']
         c.group = request.params['group']
+        c.group_view = users.group_view(c.group)
         users_in_group_list = []
         for user in users.list_users():
             if users.user_has_group(user, request.params['group']):
@@ -247,6 +333,7 @@ class AccountController(BaseController):
         c.users_in_group_list = users_in_group_list
         values = {
             'group': c.group,
+            'view': c.group_view,
         }        
         return htmlfill.render(render('/derived/account/edit_group_form.html'), values)
     
@@ -277,7 +364,7 @@ class AccountController(BaseController):
                 if users.user_has_role(user, 'boss'):
                     users.user_remove_role(user, 'boss')
             users.user_add_role(self.form_result['boss'], 'boss')
-                    
+        users.group_set_view(self.form_result['group'], self.form_result['view'])            
         redirect(url(h.url(controller='account', action='manage_accounts')))
     
     @authorize(HasAuthKitRole(['admin']))

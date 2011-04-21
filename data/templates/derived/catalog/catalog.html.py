@@ -4,7 +4,7 @@ UNDEFINED = runtime.UNDEFINED
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 6
-_modified_time = 1300888086.3870001
+_modified_time = 1303323328.3150001
 _template_filename=u'D:\\PyProjects\\Purchase\\purchase\\templates/derived/catalog/catalog.html'
 _template_uri=u'/derived/catalog/catalog.html'
 _template_cache=cache.Cache(__name__, _modified_time)
@@ -38,21 +38,21 @@ def render_body(context,**pageargs):
         __M_writer(u'\r\n\r\n')
         # SOURCE LINE 7
         __M_writer(u'\r\n\r\n')
-        # SOURCE LINE 13
+        # SOURCE LINE 16
         __M_writer(u'\r\n\r\n')
-        # SOURCE LINE 42
+        # SOURCE LINE 53
         __M_writer(u'\r\n\r\n')
-        # SOURCE LINE 48
-        __M_writer(u'\r\n\r\n')
-        # SOURCE LINE 56
+        # SOURCE LINE 59
         __M_writer(u'\r\n\r\n')
         # SOURCE LINE 69
         __M_writer(u'\r\n\r\n')
-        # SOURCE LINE 81
+        # SOURCE LINE 82
         __M_writer(u'\r\n\r\n')
-        # SOURCE LINE 93
-        __M_writer(u'\r\n\r\n\r\n\r\n')
-        # SOURCE LINE 109
+        # SOURCE LINE 94
+        __M_writer(u'\r\n\r\n')
+        # SOURCE LINE 106
+        __M_writer(u'\r\n\r\n')
+        # SOURCE LINE 120
         __M_writer(u'\r\n')
         return ''
     finally:
@@ -64,15 +64,15 @@ def render_section_description(context):
     try:
         c = context.get('c', UNDEFINED)
         __M_writer = context.writer()
-        # SOURCE LINE 44
+        # SOURCE LINE 55
         __M_writer(u'\r\n    <p><b>\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435</b>: ')
-        # SOURCE LINE 45
+        # SOURCE LINE 56
         __M_writer(escape(c.current_section.description))
         __M_writer(u'</p>\r\n    <p><i>\u0414\u0430\u0442\u0430 \u0441\u043e\u0437\u0434\u0430\u043d\u0438\u044f: ')
-        # SOURCE LINE 46
+        # SOURCE LINE 57
         __M_writer(escape(c.current_section.created))
         __M_writer(u'</i><br />\r\n    <i>\u0414\u0430\u0442\u0430 \u0438\u0437\u043c\u0435\u043d\u0435\u043d\u0438\u044f: ')
-        # SOURCE LINE 47
+        # SOURCE LINE 58
         __M_writer(escape(c.current_section.edited))
         __M_writer(u'</i></p>\r\n')
         return ''
@@ -86,15 +86,15 @@ def render_main_sections(context):
         h = context.get('h', UNDEFINED)
         c = context.get('c', UNDEFINED)
         __M_writer = context.writer()
-        # SOURCE LINE 83
+        # SOURCE LINE 96
         __M_writer(u'\r\n')
-        # SOURCE LINE 84
+        # SOURCE LINE 97
         for section in c.section:
-            # SOURCE LINE 85
+            # SOURCE LINE 98
             if section.parent_section_id == 1:
-                # SOURCE LINE 86
+                # SOURCE LINE 99
                 __M_writer(u'        <ul>\r\n        <li>\r\n        <a href="')
-                # SOURCE LINE 88
+                # SOURCE LINE 101
                 __M_writer(escape(h.url(controller='catalog', action='section', id=section.id)))
                 __M_writer(u'">')
                 __M_writer(escape(section.name))
@@ -112,24 +112,24 @@ def render_breadcrumbs(context):
         h = context.get('h', UNDEFINED)
         c = context.get('c', UNDEFINED)
         __M_writer = context.writer()
-        # SOURCE LINE 58
+        # SOURCE LINE 71
         __M_writer(u'\r\n    <h3>\r\n    <a href="')
-        # SOURCE LINE 60
+        # SOURCE LINE 73
         __M_writer(escape(h.url(controller='catalog', action='section', id='1')))
         __M_writer(u'">\u041a\u0430\u0442\u0430\u043b\u043e\u0433</a> =>\r\n')
-        # SOURCE LINE 61
+        # SOURCE LINE 74
         for section in c.breadcrumbs:
-            # SOURCE LINE 62
+            # SOURCE LINE 75
             if section == c.breadcrumbs[-1]:
-                # SOURCE LINE 63
+                # SOURCE LINE 76
                 __M_writer(u'            <a href="')
                 __M_writer(escape(h.url(controller='catalog', action='section', id=section[1])))
                 __M_writer(u'">')
                 __M_writer(escape(section[0]))
                 __M_writer(u'</a>\r\n')
-                # SOURCE LINE 64
+                # SOURCE LINE 77
             else:
-                # SOURCE LINE 65
+                # SOURCE LINE 78
                 __M_writer(u'            <a href="')
                 __M_writer(escape(h.url(controller='catalog', action='section', id=section[1])))
                 __M_writer(u'">')
@@ -137,7 +137,7 @@ def render_breadcrumbs(context):
                 __M_writer(u'</a> =>\r\n')
                 pass
             pass
-        # SOURCE LINE 68
+        # SOURCE LINE 81
         __M_writer(u'    </h3>\r\n')
         return ''
     finally:
@@ -150,15 +150,15 @@ def render_subsections(context):
         h = context.get('h', UNDEFINED)
         c = context.get('c', UNDEFINED)
         __M_writer = context.writer()
-        # SOURCE LINE 71
+        # SOURCE LINE 84
         __M_writer(u'\r\n')
-        # SOURCE LINE 72
+        # SOURCE LINE 85
         for subsection in c.section:
-            # SOURCE LINE 73
+            # SOURCE LINE 86
             if subsection.parent_section_id == c.current_section.id:
-                # SOURCE LINE 74
+                # SOURCE LINE 87
                 __M_writer(u'        <ul>\r\n        <li>\r\n        <a href="')
-                # SOURCE LINE 76
+                # SOURCE LINE 89
                 __M_writer(escape(h.url(controller='catalog', action='section', id=subsection.id)))
                 __M_writer(u'">')
                 __M_writer(escape(subsection.name))
@@ -176,17 +176,23 @@ def render_section_actions(context):
         h = context.get('h', UNDEFINED)
         c = context.get('c', UNDEFINED)
         __M_writer = context.writer()
-        # SOURCE LINE 50
-        __M_writer(u'\r\n    <p>\r\n    <a href="')
-        # SOURCE LINE 52
-        __M_writer(escape(h.url(controller='catalog', action='new_section')))
-        __M_writer(u'">\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b</a>  |\r\n    <a href="')
-        # SOURCE LINE 53
-        __M_writer(escape(h.url(controller='catalog', action='edit_section', id=c.current_section.id)))
-        __M_writer(u'">\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b</a> |\r\n    <a href="')
-        # SOURCE LINE 54
-        __M_writer(escape(h.url(controller='catalog', action='delete_section', id=c.current_section.id)))
-        __M_writer(u'">\u0423\u0434\u0430\u043b\u0438\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b</a>\r\n    </p>\r\n')
+        # SOURCE LINE 61
+        __M_writer(u'\r\n    <p>\r\n')
+        # SOURCE LINE 63
+        if h.auth.authorized(h.auth.has_admin_role):
+            # SOURCE LINE 64
+            __M_writer(u'        <a href="')
+            __M_writer(escape(h.url(controller='catalog', action='new_section')))
+            __M_writer(u'">\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b</a>  |\r\n        <a href="')
+            # SOURCE LINE 65
+            __M_writer(escape(h.url(controller='catalog', action='edit_section', id=c.current_section.id)))
+            __M_writer(u'">\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b</a> |\r\n        <a href="')
+            # SOURCE LINE 66
+            __M_writer(escape(h.url(controller='catalog', action='delete_section', id=c.current_section.id)))
+            __M_writer(u'">\u0423\u0434\u0430\u043b\u0438\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b</a>\r\n')
+            pass
+        # SOURCE LINE 68
+        __M_writer(u'    </p>\r\n')
         return ''
     finally:
         context.caller_stack._pop_frame()
@@ -197,27 +203,27 @@ def render_all_sec(context):
     try:
         c = context.get('c', UNDEFINED)
         __M_writer = context.writer()
-        # SOURCE LINE 97
+        # SOURCE LINE 108
         __M_writer(u'\r\n')
-        # SOURCE LINE 98
+        # SOURCE LINE 109
         for section in c.section:
-            # SOURCE LINE 99
+            # SOURCE LINE 110
             if section.parent_section_id == 1:
-                # SOURCE LINE 100
+                # SOURCE LINE 111
                 __M_writer(u'            <ul><li>')
                 __M_writer(escape(section.name))
                 __M_writer(u'\r\n')
-                # SOURCE LINE 101
+                # SOURCE LINE 112
                 for subsection in c.section:
-                    # SOURCE LINE 102
+                    # SOURCE LINE 113
                     if subsection.parent_section_id == section.id:
-                        # SOURCE LINE 103
+                        # SOURCE LINE 114
                         __M_writer(u'                    <ul><li>')
                         __M_writer(escape(subsection.name))
                         __M_writer(u'</li></ul>\r\n')
                         pass
                     pass
-                # SOURCE LINE 106
+                # SOURCE LINE 117
                 __M_writer(u'            </li></ul>\r\n')
                 pass
             pass
@@ -232,42 +238,64 @@ def render_section_items(context):
         h = context.get('h', UNDEFINED)
         c = context.get('c', UNDEFINED)
         __M_writer = context.writer()
-        # SOURCE LINE 15
+        # SOURCE LINE 18
         __M_writer(u'\r\n')
-        # SOURCE LINE 16
+        # SOURCE LINE 19
         if c.section_items:
-            # SOURCE LINE 17
-            __M_writer(u'        <p><b>\u041e\u0431\u044a\u0435\u043a\u0442\u044b \u0434\u0430\u043d\u043d\u043e\u0433\u043e \u0440\u0430\u0437\u0434\u0435\u043b\u0430:</b></p>\r\n        <table border="1" width="100%">\r\n            <tr>\r\n                <th>\u041c\u0430\u0440\u043a\u0430</th>\r\n                <th>\u041c\u043e\u0434\u0435\u043b\u044c</th>\r\n                <th>\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435</th>\r\n                <th>\u0426\u0435\u043d\u0430</th>\r\n                <th>\u0414\u0430\u0442\u0430 \u0438\u0437\u043c\u0435\u043d\u0435\u043d\u0438\u044f</th>\r\n                <th>\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c<br />\u0432 \u0437\u0430\u044f\u0432\u043a\u0443</th>\r\n                <th>\u0414\u0435\u0439\u0441\u0442\u0432\u0438\u044f</th>\r\n            </tr>\r\n')
+            # SOURCE LINE 20
+            __M_writer(u'        <p><b>\u041e\u0431\u044a\u0435\u043a\u0442\u044b \u0434\u0430\u043d\u043d\u043e\u0433\u043e \u0440\u0430\u0437\u0434\u0435\u043b\u0430:</b></p>\r\n        <table border="1" width="100%">\r\n            <tr>\r\n                <th>\u041c\u0430\u0440\u043a\u0430</th>\r\n                <th>\u041c\u043e\u0434\u0435\u043b\u044c</th>\r\n                <th>\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435</th>\r\n                <th>\u0426\u0435\u043d\u0430</th>\r\n                <th>\u0414\u0430\u0442\u0430 \u0438\u0437\u043c\u0435\u043d\u0435\u043d\u0438\u044f</th>\r\n')
             # SOURCE LINE 28
-            for item in c.section_items:
+            if (c.current_app_status == 1) or h.auth.authorized(h.auth.is_valid_user):
                 # SOURCE LINE 29
+                __M_writer(u'                    <th>\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c<br />\u0432 \u0437\u0430\u044f\u0432\u043a\u0443</th>\r\n')
+                pass
+            # SOURCE LINE 31
+            if h.auth.authorized(h.auth.has_admin_role):
+                # SOURCE LINE 32
+                __M_writer(u'                    <th>\u0414\u0435\u0439\u0441\u0442\u0432\u0438\u044f</th>\r\n')
+                pass
+            # SOURCE LINE 34
+            __M_writer(u'            </tr>\r\n')
+            # SOURCE LINE 35
+            for item in c.section_items:
+                # SOURCE LINE 36
                 __M_writer(u'            <tr>\r\n                <td>')
-                # SOURCE LINE 30
+                # SOURCE LINE 37
                 __M_writer(escape(item.brand))
                 __M_writer(u'</td>\r\n                <td>')
-                # SOURCE LINE 31
+                # SOURCE LINE 38
                 __M_writer(escape(item.model))
                 __M_writer(u'</td>\r\n                <td>')
-                # SOURCE LINE 32
+                # SOURCE LINE 39
                 __M_writer(escape(item.description))
                 __M_writer(u'</td>\r\n                <td>')
-                # SOURCE LINE 33
+                # SOURCE LINE 40
                 __M_writer(escape(item.price))
                 __M_writer(u'</td>\r\n                <td>')
-                # SOURCE LINE 34
+                # SOURCE LINE 41
                 __M_writer(escape(item.edited))
-                __M_writer(u'</td>\r\n                <td><a href="')
-                # SOURCE LINE 35
-                __M_writer(escape(h.url(controller='application', action='add_item')))
-                __M_writer(u'">X</a></td>\r\n                <td><a href="')
-                # SOURCE LINE 36
-                __M_writer(escape(h.url(id=item.id, controller='catalog', action='edit_item')))
-                __M_writer(u'">\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c</a>\r\n                    <a href="')
-                # SOURCE LINE 37
-                __M_writer(escape(h.url(controller='catalog', action='delete_item', id=item.id)))
-                __M_writer(u'">\u0423\u0434\u0430\u043b\u0438\u0442\u044c</a></td>\r\n            </tr>\r\n')
+                __M_writer(u'</td>\r\n')
+                # SOURCE LINE 42
+                if (c.current_app_status == 1) or h.auth.authorized(h.auth.is_valid_user):
+                    # SOURCE LINE 43
+                    __M_writer(u'                    <th><a href="')
+                    __M_writer(escape(h.url(controller='app', action='add_item', id=item.id,)))
+                    __M_writer(u'">\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c</a></th>\r\n')
+                    pass
+                # SOURCE LINE 45
+                if h.auth.authorized(h.auth.has_admin_role):
+                    # SOURCE LINE 46
+                    __M_writer(u'                    <td><a href="')
+                    __M_writer(escape(h.url(controller='catalog', action='edit_item', id=item.id)))
+                    __M_writer(u'">\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c</a>\r\n                        <a href="')
+                    # SOURCE LINE 47
+                    __M_writer(escape(h.url(controller='catalog', action='delete_item', id=item.id)))
+                    __M_writer(u'">\u0423\u0434\u0430\u043b\u0438\u0442\u044c</a></td>\r\n')
+                    pass
+                # SOURCE LINE 49
+                __M_writer(u'            </tr>\r\n')
                 pass
-            # SOURCE LINE 40
+            # SOURCE LINE 51
             __M_writer(u'        </table>\r\n')
             pass
         return ''
@@ -293,10 +321,18 @@ def render_item_actions(context):
         c = context.get('c', UNDEFINED)
         __M_writer = context.writer()
         # SOURCE LINE 9
-        __M_writer(u'\r\n    <p>\r\n    <a href="')
+        __M_writer(u'\r\n    <p>\r\n')
         # SOURCE LINE 11
-        __M_writer(escape(h.url(controller='catalog', action='new_item', name=c.current_section.name)))
-        __M_writer(u'">\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u043e\u0431\u044a\u0435\u043a\u0442</a>\r\n    </p>\r\n')
+        if h.auth.authorized(h.auth.has_admin_role):
+            # SOURCE LINE 12
+            __M_writer(u'        <a href="')
+            __M_writer(escape(h.url(controller='catalog', action='new_item', name=c.current_section.name)))
+            __M_writer(u'">\u0414\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u043e\u0431\u044a\u0435\u043a\u0442</a> |\r\n')
+            pass
+        # SOURCE LINE 14
+        __M_writer(u'        <a href="')
+        __M_writer(escape(h.url(controller='catalog', action='propose_item', name=c.current_section.name)))
+        __M_writer(u'">\u041f\u0440\u0435\u0434\u043b\u043e\u0436\u0438\u0442\u044c \u043e\u0431\u044a\u0435\u043a\u0442</a>\r\n    </p>\r\n')
         return ''
     finally:
         context.caller_stack._pop_frame()

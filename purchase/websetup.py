@@ -36,41 +36,61 @@ def setup_app(command, conf, vars):
     users.role_create("user")
     
     users.group_create(u"SOTO-50")
+    users.group_set_view(u"SOTO-50", u"СОТО-50")
     users.group_create(u"OLM-15")
+    users.group_set_view(u"OLM-15", u"ОЛМ-15")
     users.group_create(u"admin")
+    users.group_set_view(u"admin", u"Администрация")
+    
     
     users.user_create("admin", password="admin")
+    users.user_set_view("admin", u'Администратор')
     users.user_add_role("admin", role="admin")
     users.user_set_group("admin", group="admin")
     
     users.user_create("boss1", password="boss")
+    users.user_set_view("boss1", u'Фамилия Имя')
     users.user_add_role("boss1", role="boss")
     users.user_set_group("boss1", group="SOTO-50")
     
     users.user_create("boss2", password="boss")
+    users.user_set_view("boss2", u'Фамилия Имя')
     users.user_add_role("boss2", role="boss")
     users.user_set_group("boss2", group="OLM-15")
     
     users.user_create("director", password="director")
+    users.user_set_view("director", u'Фамилия Имя')
     users.user_add_role("director", role="director")
     users.user_set_group("director", group="admin")
     
     users.user_create("user1", password="user1")
+    users.user_set_view("user1", u'Фамилия Имя')
     users.user_add_role("user1", role="user")
     users.user_set_group("user1", group="SOTO-50")
     
     users.user_create("user2", password="user2")
+    users.user_set_view("user2", u'Фамилия Имя')
     users.user_add_role("user2", role="user")
     users.user_set_group("user2", group="SOTO-50")
     
     users.user_create("user3", password="user3")
+    users.user_set_view("user3", u'Фамилия Имя')
     users.user_add_role("user3", role="user")
     users.user_set_group("user3", group="OLM-15")
     
     users.user_create("user4", password="user4")
+    users.user_set_view("user4", u'Фамилия Имя')
     users.user_add_role("user4", role="user")
     users.user_set_group("user4", group="OLM-15")
     
+    # Adding campaign
+    campaign = model.Campaign()
+    campaign.start_date = '2011.04.01'
+    campaign.end_date = '2011.04.21'
+    campaign.status = '1'
+    campaign.description = u'Тестовая кампания'
+    meta.Session.add(campaign)
+    meta.Session.flush()
     
     # Adding units
     log.info("Adding units...")

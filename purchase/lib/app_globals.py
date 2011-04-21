@@ -20,3 +20,6 @@ class Globals(object):
         self.current_campaign_start_date = 0
         self.current_campaign_end_date = 0
         self.user_id = 0
+        self.user_group = 0
+        self.user_view = 0
+        self.current_section_id = 0

@@ -1,0 +1,56 @@
+<%inherit file="/base/index.html"/>
+
+<%def name="title()">Изменение элемента заявки сотрудника</%def>
+<%def name="heading()"><h1>Изменение элемента заявки сотрудника</h1></%def>
+
+${h.form_start(h.url(controller='app', action='edit_item_group', id=c.user_app_element.first().id), method="post")}
+        <table border="1" width="100%">
+            <tr>
+                <th rowspan="2" width="200">    Наименование</th>
+                <th rowspan="2" width="50">     Ед. Изм</th>
+                <th colspan="4">                Квартал</th>
+                <th rowspan="2" width="70">     Общее<br />кол-во</th>
+                <th rowspan="2" width="70">     Цена (руб.)</th>
+                <th rowspan="2" width="70">     Сумма (руб.)</th>
+                <th rowspan="2" width="80">     Источник<br />финансирования</th>
+                <th rowspan="2" width="80">     Для каких нужд</th>
+                <th rowspan="2" width="80">     Место<br />внедрения</th>
+                <th rowspan="2" width="120">    Примечание</th>
+            </tr>
+            <tr>
+                <th width="50">1</th> 
+                <th width="50">2</th>
+                <th width="50">3</th>
+                <th width="50">4</th>               
+            </tr>
+        % for app_element in c.user_app_element:                
+            <tr>
+                <td>${app_element.id} ${app_element.items.brand} ${app_element.items.model}
+                    % if app_element.status == 3:
+                        <i><b>Удалено</b></i>
+                    % endif
+                </td>                
+                <td>${app_element.items.units.name}</td>
+                <td>${h.text(name='quarter1', size=2)}</td>
+                <td>${h.text(name='quarter2', size=2)}</td>
+                <td>${h.text(name='quarter3', size=2)}</td>
+                <td>${h.text(name='quarter4', size=2)}</td>
+                <td>${c.element_amount[app_element.id]}</td> 
+                <td>${app_element.items.price}</td>
+                <td>
+                % if app_element.status == 3:
+                    <i><b>${c.element_price[app_element.id]}</b></i>
+                % else:
+                    ${c.element_price[app_element.id]}
+                % endif               
+                </td> 
+                <td>${h.select(name='finsource', options=c.available_finsource, selected_values=[],)}</td>
+                <td>${h.select(name='needs', options=c.available_needs, selected_values=[],)}</td>
+                <td>${h.select(name='place', options=c.available_groups, selected_values=[],)}</td>
+                <td>${h.textarea(name='note', rows=3, cols=10,)}</td>
+            </tr>
+        % endfor
+        </table>
+        
+<br />
+${h.field(field=h.submit(value=u"Внести изменения в заявку", name='submit'))}

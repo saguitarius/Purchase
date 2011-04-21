@@ -4,7 +4,7 @@ UNDEFINED = runtime.UNDEFINED
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 6
-_modified_time = 1299138847.714
+_modified_time = 1302792435.493
 _template_filename='D:\\PyProjects\\Purchase\\purchase\\templates/derived/account/edit_group_form.html'
 _template_uri='/derived/account/edit_group_form.html'
 _template_cache=cache.Cache(__name__, _modified_time)
@@ -50,6 +50,14 @@ def render_body(context,**pageargs):
         __M_writer(u'    \r\n    ')
         # SOURCE LINE 12
         __M_writer(escape(h.field(
+        "Отображение",
+        h.text(name='view'),
+        required=True,
+    )))
+        # SOURCE LINE 16
+        __M_writer(u'    \r\n    ')
+        # SOURCE LINE 17
+        __M_writer(escape(h.field(
         u"Начальник",
         h.select(
             "boss",
@@ -59,12 +67,12 @@ def render_body(context,**pageargs):
         ),
         required=True
     )))
-        # SOURCE LINE 21
+        # SOURCE LINE 26
         __M_writer(u'\r\n    ')
-        # SOURCE LINE 22
+        # SOURCE LINE 27
         __M_writer(escape(h.field(field=h.submit(value="Изменить", name='submit'))))
         __M_writer(u'\r\n')
-        # SOURCE LINE 23
+        # SOURCE LINE 28
         __M_writer(escape(h.form_end()))
         return ''
     finally:

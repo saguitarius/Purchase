@@ -9,6 +9,8 @@ from sqlalchemy import orm
 from sqlalchemy import schema, types
 import datetime
 
+from authkit.users.sqlalchemy_04_driver import setup_model
+
 def init_model(engine):
     """Call me before using any of the tables or classes in the model"""
     #Session.configure(bind=engine)
@@ -64,10 +66,13 @@ app_elements_table = schema.Table('app_elements', meta.Base.metadata,
     schema.Column('quarter2', types.Integer()),
     schema.Column('quarter3', types.Integer()),
     schema.Column('quarter4', types.Integer()),
-    schema.Column('place', types.Integer, schema.ForeignKey('groups.uid'), nullable=True),
+    schema.Column('amount', types.Integer()),
+    schema.Column('price', types.Integer()),
     schema.Column('finsource', types.Integer, schema.ForeignKey('finsource.id'), nullable=True),
     schema.Column('needs', types.Integer, schema.ForeignKey('needs.id'), nullable=True),
+    schema.Column('place', types.Integer, schema.ForeignKey('groups.uid'), nullable=True),
     schema.Column('note', types.Unicode(255)),
+    schema.Column('status', types.Integer()),
 )
 
 finsource_table = schema.Table('finsource', meta.Base.metadata,
@@ -123,12 +128,13 @@ orm.mapper(Campaign, campaign_table, properties={
 })
 
 orm.mapper(Item, item_table, properties={
-    'units':orm.relation(Unit),
+    'units':orm.relation(Unit, primaryjoin=item_table.c.unit_id==unit_table.c.id),
 })
 
-orm.mapper(AppElements, app_elements_table, properties={
-    'finsources':orm.relation(FinSource, uselist=False, backref='app_elements'),
-    'needss':orm.relation(Needs, uselist=False, backref='app_elements'),
+orm.mapper(AppElements, app_elements_table, properties={   
+    'items':orm.relation(Item, primaryjoin=app_elements_table.c.item_id==item_table.c.id),                                                             
+    'finsources':orm.relation(FinSource, primaryjoin=app_elements_table.c.finsource==finsource_table.c.id),                                                                                                                               
+    'needss':orm.relation(Needs, primaryjoin=app_elements_table.c.needs==needs_table.c.id),
 }) 
 
 orm.mapper(App, app_table, properties={

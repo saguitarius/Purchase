@@ -1,0 +1,75 @@
+<%inherit file="/base/index.html"/>
+
+<%def name="title()">Заявка по предприятию</%def>
+<%def name="heading()"><h1>Заявка по предприятию</h1></%def>
+
+        <table border="1" width="100%">
+            <tr>
+                <th rowspan="2" width="200">    Наименование</th>
+                <th rowspan="2" width="50">     Ед. Изм</th>
+                <th colspan="4">                Квартал</th>
+                <th rowspan="2" width="70">     Общее<br />кол-во</th>
+                <th rowspan="2" width="70">     Цена (руб.)</th>
+                <th rowspan="2" width="70">     Сумма (руб.)</th>
+                <th rowspan="2" width="80">     Источник<br />финансирования</th>
+                <th rowspan="2" width="80">     Для каких нужд</th>
+                <th rowspan="2" width="80">     Место<br />внедрения</th>
+                ###<th rowspan="2" width="120">    Примечание</th>
+            </tr>
+            <tr>
+                <th width="50">1</th> 
+                <th width="50">2</th>
+                <th width="50">3</th>
+                <th width="50">4</th>               
+            </tr>
+        % for app_element in c.global_app_elements:
+            <tr>
+                <td>
+                    ${app_element.items.brand} ${app_element.items.model}
+                </td>
+                <td>${app_element.items.units.name}</td>
+                <td>${app_element.quarter1}</td>
+                <td>${app_element.quarter2}</td>
+                <td>${app_element.quarter3}</td>
+                <td>${app_element.quarter4}</td>
+                <td>${app_element.amount}</td>
+                <td>${app_element.items.price}</td>
+                <td>
+                    % if app_element.status == 3:
+                        <i><b>${app_element.price}</b></i>
+                    % else:
+                        ${app_element.price}
+                    % endif
+                </td>
+                <td>${app_element.finsources.name}</td>
+                <td>${app_element.needss.name}</td>
+                <td>
+                    ##${app_element.place}
+                    % for place in c.available_groups:
+                    %   if place[0] == app_element.place:
+                            ${place[1]}
+                    %   endif
+                    % endfor
+                </td>
+                ###<td>${app_element.note}</td>       
+            </tr>
+        % endfor
+        
+            <tr>
+                <th>Итого:</th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>${c.total_price}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                ###<td></td>
+            </tr>
+        </table>
+        
+<p><a href="${h.url(controller='app', action='approve_global_app')}">Утвердить заявку по предприятию</a></p>

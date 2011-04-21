@@ -1,7 +1,9 @@
+## -*- coding: utf-8 -*-
+
 <%inherit file="/base/index.html"/>
 
-<%def name="title()">Signed In</%def>
-<%def name="heading()"><h1>Signed In</h1></%def>
+<%def name="title()">Вход в систему осуществлён</%def>
+<%def name="heading()"><h1>Вход в систему осуществлён</h1></%def>
 
-<p>You are signed in as ${request.environ['REMOTE_USER']}.
-<a href="${h.url(controller='account', action='signout')}">Sign out</a></p>
+<p>Вы вошли как ${request.environ['REMOTE_USER']}.
+<a href="${h.url(controller='account', action='signout')}">Выйти</a></p>

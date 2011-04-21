@@ -7,15 +7,25 @@ ${user_exists()}
 
 ${h.form_start(h.url(controller='account', action='add_user'), method="post")}
     ${h.field(
-        "Имя",
+        "Логин",
         h.text(name='username'),
+        required=True,
+    )}
+    ${h.field(
+        "Имя",
+        h.text(name='view'),
+        required=True,
+    )}
+    ${h.field(
+        "E-mail",
+        h.text(name='mail'),
         required=True,
     )}
     ${h.field(
         "Пароль",
         h.password(name='password'),
         required=True,
-    )}    
+    )}
     ${h.field(
         u"Группа",
         h.select(
@@ -26,17 +36,17 @@ ${h.form_start(h.url(controller='account', action='add_user'), method="post")}
         ),
         required=True
     )}
-    ${h.field(
-        u"Права",
-        h.select(
-            "roles",
-            id='roles',
-            ##options=[''] + c.available_roles,
-            options=c.available_roles,
-            selected_values=[],
-            #multiple = True,
-        ),
-    )}
+##    ${h.field(
+##        u"Права",
+##        h.select(
+##            "roles",
+##            id='roles',
+##            ##options=[''] + c.available_roles,
+##            options=c.available_roles,
+##            selected_values=[],
+##            #multiple = True,
+##        ),
+##    )}
     ${h.field(field=h.submit(value="Добавить", name='submit'))}
 ${h.form_end()}
     
