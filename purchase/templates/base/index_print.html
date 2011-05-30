@@ -1,0 +1,108 @@
+## -*- coding: utf-8 -*-
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>${self.title()}</title>
+    ${self.head()}
+    
+</head>
+<body class="yui-skin-sam">
+    <div id="doc3" class="yui-t3">
+        <div id="hd">        
+            ${self.heading()}
+        </div>
+
+        <div id="bd">
+            ${next.body()}
+        </div>
+    </div>
+</body>
+</html>
+
+
+<%def name="account()">
+    % if h.auth.authorized(h.auth.is_valid_user) and not (request.urlvars['controller'] == 'account' and request.urlvars['action'] == 'signout'):
+        <p>Вы вошли как <b>${request.environ['REMOTE_USER']}</b>,
+            ${app_globals.user_view}. Группа: ${app_globals.user_group}. 
+            <a href="${h.url('signout')}"><b>Выйти</b></a></p>
+    % else:
+        <p><a href="${h.url('signin')}"><b>Войти</b></a></p>
+    % endif
+</%def>
+
+<%def name="campaign()">
+    % if h.auth.authorized(h.auth.is_valid_user):
+    %       if (app_globals.current_campaign_id == 0) and (app_globals.finished_active_campaign_id == 0):
+                <p>В данный момент не запущено кампаний.</p>
+    %       endif   
+    %       if (app_globals.current_campaign_id != 0) and (app_globals.finished_active_campaign_id == 0):
+                <p>Запущена заявочная кампания № ${app_globals.current_campaign_id}. Срок проведения: с <b>${app_globals.current_campaign_start_date}</b> по <b>${app_globals.current_campaign_end_date}</b>.</p>
+    %       endif
+    %       if app_globals.finished_active_campaign_id != 0:
+                <p>Заявочная кампания № ${app_globals.finished_active_campaign_id} окончена. Срок проведения: с <b>${app_globals.finished_active_campaign_start_date}</b> по <b>${app_globals.finished_active_campaign_end_date}</b>.</p>
+    %       endif    
+    % endif
+</%def>
+
+<%def name="title()">
+    Система управления закупками
+</%def>
+
+<%def name="head()">
+    ${h.stylesheet_link(h.url('/yui/2.8.2/reset-fonts-grids/reset-fonts-grids.css'))}
+    ${h.stylesheet_link(h.url('/yui/2.8.2/base/base-min.css'))}
+    ${h.stylesheet_link(h.url('/css/main_print.css'))}                                     
+</%def>
+
+<%def name="header()">
+    <a name="top"></a>
+</%def>
+
+
+<%def name="heading()">
+    <h1>${c.heading or 'No Title'}</h1>
+</%def>
+
+<%def name="tabs()">
+<div id="maintabs">
+<ul class="draglist">
+
+    % if h.auth.authorized(h.auth.is_valid_user):
+        <li><a href="${h.url('/')}">Каталог</a></li>
+        % if not h.auth.authorized(h.auth.has_admin_role):
+            % if app_globals.current_campaign_id != 0:
+                <li><a href="${h.url(controller='app', action='user_app')}">Заявка</a></li>
+            % endif
+            % if app_globals.current_campaign_id == 0:
+                <li>Заявка</li>
+            % endif   
+        % endif 
+        % if h.auth.authorized(h.auth.has_admin_role):
+            <li><a href="${h.url(controller='account', action='index')}">Пользователи</a></li> 
+        % endif     
+        % if h.auth.authorized(h.auth.has_boss_role):
+            % if app_globals.current_campaign_id != 0:
+                <li><a href="${h.url(controller='app', action='group_app')}">Заявка по отделу</a></li> 
+            % endif
+            % if app_globals.current_campaign_id == 0:
+                <li>Заявка по отделу</li>
+            % endif   
+        % endif  
+        % if h.auth.authorized(h.auth.has_director_role):
+            % if app_globals.current_campaign_id != 0:
+                <li><a href="${h.url(controller='app', action='global_app')}">Заявка по предприятию</a></li>
+                <li><a href="${h.url(controller='app', action='sale_app')}">Реализация заявки</a></li>
+            % endif
+            % if app_globals.current_campaign_id == 0:
+                <li>Заявка по предприятию</li>
+                <li>Реализация заявки</li>
+            % endif
+            <li><a href="${h.url(controller='campaign', action='index')}">Кампании</a></li>
+        % endif  
+    % endif
+</ul>
+</div>
+</%def>

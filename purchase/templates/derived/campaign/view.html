@@ -6,11 +6,20 @@
 <h2>Текущая кампания</h2>
 % if c.current_campaign:
     <p>Дата начала: ${c.current_campaign.start_date}</p>
-    <p>Дата окончания: ${c.current_campaign.start_date}</p>
+    <p>Дата окончания: ${c.current_campaign.end_date}</p>
     <p>Описание: ${c.current_campaign.description}</p>
     <p><a href="${h.url(controller='campaign', action='info', id=c.current_campaign.id)}">Информация о кампании</a></p>
+    % if c.current_campaign.status == 1:
+        <p><a href="${h.url(controller='campaign', action='stop', id=c.current_campaign.id)}">Прекратить подачу заявок</a></p>
+    % endif
 % else:
+    % if c.finished_active_campaign:
+        % if c.finished_active_campaign.status == 2:
+            <p><a href="${h.url(controller='campaign', action='end', id=c.finished_active_campaign.id)}">Завершить кампанию</a></p>
+        % endif
+    % else:
     В данный момент заявочная кампания не запущена. <a href="${h.url(controller='campaign', action='new')}">Создание заявочной кампании</a>
+    % endif
 % endif
 <br />
 
@@ -19,10 +28,13 @@
     Нет кампаний для отображения
 % else:
     % for campaign in c.finished_inactive_campaign:
-        <p>Дата начала: ${campaign.start_date}</p>
-        <p>Дата окончания: ${campaign.end_date}</p>
-        <p>Описание: ${campaign.description}</p>
-        <p><a href="${h.url(controller='campaign', action='info', id=campaign.id)}">Информация о кампании</a></p>
+        <p>
+            <b>Порядковый номер:</b> ${campaign.id}<br />
+            <b>Дата начала:</b> ${campaign.start_date}<br />
+            <b>Дата окончания:</b> ${campaign.end_date}<br />
+            <b>Описание:</b> ${campaign.description}<br />
+            <a href="${h.url(controller='campaign', action='info', id=campaign.id)}">Информация о кампании</a>
+        </p>
         <br />
     % endfor
 % endif

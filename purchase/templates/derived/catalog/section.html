@@ -2,14 +2,22 @@
 
 <%namespace file="/derived/catalog/catalog.html" name="catalog" import='*'/>
 
-##${main_sections()}
-${breadcrumbs()}
-${subsections()}
-${section_description()}
-${section_items()}
-${item_actions()}
-${section_actions()}
+    ${breadcrumbs()}
+    <div id="yui-main">
+        <div class="yui-b">
+            ##${main_sections()}
+            ###${subsections()}
+            ${section_description()}
+            ${section_items()}
+            ${item_actions()}
+            ${section_actions()}           
+        </div>
+    </div>
+    <div class="yui-b">
+        ${all_sections()}
+        ${search()}
+    </div>
 
 <%def name="heading()">
-    <h1 class="main">Разделы каталога</h1>
+    <h1 class="main">Каталог</h1>
 </%def>

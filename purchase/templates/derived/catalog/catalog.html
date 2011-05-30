@@ -2,6 +2,33 @@
 
 ${main_sections()}
 
+<%def name="head()">
+    ${h.stylesheet_link(h.url('/yui/2.8.2/reset-fonts-grids/reset-fonts-grids.css'))}
+    ${h.stylesheet_link(h.url('/yui/2.8.2/base/base-min.css'))}
+    ${h.stylesheet_link(h.url('/css/main.css'))}  
+    
+    <script type="text/javascript" src="/jquery.js"></script>          
+    <script type="text/javascript">       
+       # Показывает подразделы
+     $(document).ready(function() {
+ 
+       $('#toggleli').click(function(){
+         $('div.showhide,li.child').toggle();
+       });
+     });       
+    
+    ### Скрывает все подразделы
+    function hide_all() {
+        $('div.showhide,li.child').hide();
+    }
+    
+    ### Скрыть подразделы при открытии страницы
+    window.onload = function() {
+       hide_all();
+     };                                                    
+    </script>  
+</%def>
+
 <%def name="heading()">
     <h1 class="main">Каталог товаров</h1>
 </%def>
@@ -9,53 +36,65 @@ ${main_sections()}
 <%def name="item_actions()">
     <p>
     % if h.auth.authorized(h.auth.has_admin_role):
-        <a href="${h.url(controller='catalog', action='new_item', name=c.current_section.name)}">Добавить объект</a> |
+        <a href="${h.url(controller='catalog', action='new_item', name=c.current_section.name)}">Добавить объект</a> 
     % endif
+    % if h.auth.authorized(h.auth.has_user_role):
         <a href="${h.url(controller='catalog', action='propose_item', name=c.current_section.name)}">Предложить объект</a>
+    % endif
     </p>
 </%def>
 
 <%def name="section_items()">
     % if c.section_items:
-        <p><b>Объекты данного раздела:</b></p>
+        ###<p><b>Объекты данного раздела:</b></p>
         <table border="1" width="100%">
             <tr>
+                <th>№</th>
                 <th>Марка</th>
                 <th>Модель</th>
                 <th>Описание</th>
-                <th>Цена</th>
+                <th>Цена (руб.)</th>
                 <th>Дата изменения</th>
-                % if (c.current_app_status == 1) or h.auth.authorized(h.auth.is_valid_user):
+                % if (c.current_app_status == 1) and h.auth.authorized(h.auth.is_valid_user) and (not h.auth.authorized(h.auth.has_admin_role)):
                     <th>Добавить<br />в заявку</th>
                 % endif
                 % if h.auth.authorized(h.auth.has_admin_role):
                     <th>Действия</th>
                 % endif
             </tr>
+        <% 
+            count = 0
+        %>
         % for item in c.section_items:
-            <tr>
-                <td>${item.brand}</td>
-                <td>${item.model}</td>
-                <td>${item.description}</td>
-                <td>${item.price}</td>
-                <td>${item.edited}</td>
-                % if (c.current_app_status == 1) or h.auth.authorized(h.auth.is_valid_user):
-                    <th><a href="${h.url(controller='app', action='add_item', id=item.id,)}">Добавить</a></th>
-                % endif
-                % if h.auth.authorized(h.auth.has_admin_role):
-                    <td><a href="${h.url(controller='catalog', action='edit_item', id=item.id)}">Изменить</a>
-                        <a href="${h.url(controller='catalog', action='delete_item', id=item.id)}">Удалить</a></td>
-                % endif
-            </tr>
+            % if item.deleted != 1:
+                <% 
+                    count += 1
+                %>
+                <tr>
+                    <td>${count}</td>
+                    <td>${item.brand}</td>
+                    <td>${item.model}</td>
+                    <td>${item.description}</td>
+                    <td align="right">${item.price}</td>
+                    <td>${item.edited}</td>
+                    % if (c.current_app_status == 1) and h.auth.authorized(h.auth.is_valid_user) and (not h.auth.authorized(h.auth.has_admin_role)):
+                        <th><a href="${h.url(controller='app', action='add_item', id=item.id,)}">Добавить</a></th>
+                    % endif
+                    % if h.auth.authorized(h.auth.has_admin_role):
+                        <td><a href="${h.url(controller='catalog', action='edit_item', id=item.id)}">Изменить</a>
+                            <a href="${h.url(controller='catalog', action='delete_item', id=item.id)}">Удалить</a></td>
+                    % endif
+                </tr>
+            % endif
         % endfor
         </table>
     % endif
 </%def>
 
 <%def name="section_description()">
-    <p><b>Описание</b>: ${c.current_section.description}</p>
-    <p><i>Дата создания: ${c.current_section.created}</i><br />
-    <i>Дата изменения: ${c.current_section.edited}</i></p>
+###    <p><b>Описание</b>: ${c.current_section.description}</p>
+###    <p><i>Дата создания: ${c.current_section.created}</i><br />
+###    <i>Дата изменения: ${c.current_section.edited}</i></p>
 </%def>
 
 <%def name="section_actions()">
@@ -70,12 +109,12 @@ ${main_sections()}
 
 <%def name="breadcrumbs()">
     <h3>
-    <a href="${h.url(controller='catalog', action='section', id='1')}">Каталог</a> =>
+    <a href="${h.url(controller='catalog', action='section', id='1')}">Каталог</a> >
     % for section in c.breadcrumbs:
         % if section == c.breadcrumbs[-1]:
             <a href="${h.url(controller='catalog', action='section', id=section[1])}">${section[0]}</a>
         % else:
-            <a href="${h.url(controller='catalog', action='section', id=section[1])}">${section[0]}</a> =>
+            <a href="${h.url(controller='catalog', action='section', id=section[1])}">${section[0]}</a> >
         % endif
     % endfor
     </h3>
@@ -105,16 +144,40 @@ ${main_sections()}
     % endfor
 </%def>
 
-<%def name="all_sec()">
+<%def name="all_sections()">
     % for section in c.section:
     %   if section.parent_section_id == 1:
-            <ul><li>${section.name}
-    %       for subsection in c.section:
-    %           if subsection.parent_section_id == section.id:
-                    <ul><li>${subsection.name}</li></ul>
-    %           endif
-    %       endfor
-            </li></ul>
+            <dl>
+            <li>
+            <input type="image" src="/plus.gif" id="toggleli" />
+            <a href="${h.url(controller='catalog', action='section', id=section.id)}">${section.name}</a>
+            ${show_subsection(section)}
+            </li>
+            </dl>
     %   endif
     % endfor
+</%def>
+
+<%def name="show_subsection(section)">
+    % for subsection in c.section:
+    %     if subsection.parent_section_id == section.id:
+              <dl>
+              <li class='child'+${subsection.parent_section_id}+${subsection.id}>
+              <input type="image" src="/plus.gif" id="toggleli" />
+              <a href="${h.url(controller='catalog', action='section', id=subsection.id)}">${subsection.name}</a>
+              ${show_subsection(subsection)}
+              </li>
+              </dl>
+    %     endif
+    % endfor
+</%def>
+
+<%def name="search()">
+${h.form_start(h.url(controller='catalog', action='search_item'), method="post")}
+    ${h.field(
+        u"Поиск",
+        h.text(name='search_string'),
+    )}
+    ${h.field(field=h.submit(value=u"Найти", name='submit'))}
+${h.form_end()}
 </%def>

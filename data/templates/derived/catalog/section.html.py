@@ -4,7 +4,7 @@ UNDEFINED = runtime.UNDEFINED
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 6
-_modified_time = 1298750145.858
+_modified_time = 1306329749.875
 _template_filename='D:\\PyProjects\\Purchase\\purchase\\templates/derived/catalog/section.html'
 _template_uri='/derived/catalog/section.html'
 _template_cache=cache.Cache(__name__, _modified_time)
@@ -33,35 +33,40 @@ def render_body(context,**pageargs):
         __M_locals = __M_dict_builtin(pageargs=pageargs)
         _import_ns = {}
         _mako_get_namespace(context, u'catalog')._populate(_import_ns, [u'*'])
-        subsections = _import_ns.get('subsections', context.get('subsections', UNDEFINED))
+        search = _import_ns.get('search', context.get('search', UNDEFINED))
+        section_description = _import_ns.get('section_description', context.get('section_description', UNDEFINED))
         breadcrumbs = _import_ns.get('breadcrumbs', context.get('breadcrumbs', UNDEFINED))
         section_actions = _import_ns.get('section_actions', context.get('section_actions', UNDEFINED))
-        item_actions = _import_ns.get('item_actions', context.get('item_actions', UNDEFINED))
         section_items = _import_ns.get('section_items', context.get('section_items', UNDEFINED))
-        section_description = _import_ns.get('section_description', context.get('section_description', UNDEFINED))
+        all_sections = _import_ns.get('all_sections', context.get('all_sections', UNDEFINED))
+        item_actions = _import_ns.get('item_actions', context.get('item_actions', UNDEFINED))
         __M_writer = context.writer()
         # SOURCE LINE 1
         __M_writer(u'\r\n\r\n')
         # SOURCE LINE 3
-        __M_writer(u'\r\n\r\n')
-        # SOURCE LINE 6
+        __M_writer(u'\r\n\r\n    ')
+        # SOURCE LINE 5
         __M_writer(escape(breadcrumbs()))
-        __M_writer(u'\r\n')
-        # SOURCE LINE 7
-        __M_writer(escape(subsections()))
-        __M_writer(u'\r\n')
-        # SOURCE LINE 8
-        __M_writer(escape(section_description()))
-        __M_writer(u'\r\n')
-        # SOURCE LINE 9
-        __M_writer(escape(section_items()))
-        __M_writer(u'\r\n')
+        __M_writer(u'\r\n    <div id="yui-main">\r\n        <div class="yui-b">\r\n')
         # SOURCE LINE 10
-        __M_writer(escape(item_actions()))
-        __M_writer(u'\r\n')
+        __M_writer(u'            ')
+        __M_writer(escape(section_description()))
+        __M_writer(u'\r\n            ')
         # SOURCE LINE 11
+        __M_writer(escape(section_items()))
+        __M_writer(u'\r\n            ')
+        # SOURCE LINE 12
+        __M_writer(escape(item_actions()))
+        __M_writer(u'\r\n            ')
+        # SOURCE LINE 13
         __M_writer(escape(section_actions()))
-        __M_writer(u'\r\n\r\n')
+        __M_writer(u'           \r\n        </div>\r\n    </div>\r\n    <div class="yui-b">\r\n        ')
+        # SOURCE LINE 17
+        __M_writer(escape(all_sections()))
+        __M_writer(u'\r\n        ')
+        # SOURCE LINE 18
+        __M_writer(escape(search()))
+        __M_writer(u'\r\n    </div>\r\n\r\n')
         return ''
     finally:
         context.caller_stack._pop_frame()
@@ -73,8 +78,8 @@ def render_heading(context):
         _import_ns = {}
         _mako_get_namespace(context, u'catalog')._populate(_import_ns, [u'*'])
         __M_writer = context.writer()
-        # SOURCE LINE 13
-        __M_writer(u'\r\n    <h1 class="main">\u0420\u0430\u0437\u0434\u0435\u043b\u044b \u043a\u0430\u0442\u0430\u043b\u043e\u0433\u0430</h1>\r\n')
+        # SOURCE LINE 21
+        __M_writer(u'\r\n    <h1 class="main">\u041a\u0430\u0442\u0430\u043b\u043e\u0433</h1>\r\n')
         return ''
     finally:
         context.caller_stack._pop_frame()

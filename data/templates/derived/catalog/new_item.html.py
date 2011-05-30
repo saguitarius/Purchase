@@ -4,7 +4,7 @@ UNDEFINED = runtime.UNDEFINED
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 6
-_modified_time = 1298974331.8499999
+_modified_time = 1306412630.3210001
 _template_filename='D:\\PyProjects\\Purchase\\purchase\\templates/derived/catalog/new_item.html'
 _template_uri='/derived/catalog/new_item.html'
 _template_cache=cache.Cache(__name__, _modified_time)
@@ -102,7 +102,7 @@ def render_body(context,**pageargs):
         # SOURCE LINE 45
         __M_writer(u'\r\n    ')
         # SOURCE LINE 46
-        __M_writer(escape(h.field(field=h.submit(value=u"Создать", name='submit'))))
+        __M_writer(escape(h.field(field=h.submit(value=u"Добавить", name='submit'))))
         __M_writer(u'\r\n')
         # SOURCE LINE 47
         __M_writer(escape(h.form_end()))

@@ -33,12 +33,13 @@ span.error-message, span.required {
     margin-left: 3px;
     border-bottom: none;
     text-decoration: none;
+    font-weight: bold;
 }
 #maintabs li a:link { color: #113958; }
 #maintabs li a:visited { color: #113958; }
 #maintabs li a:hover {
-    color: #000;
-    background: #fff;
+    color: #fff;
+    background: #113958;
     border-color: #227;
 }
 #maintabs li a#current
@@ -84,10 +85,13 @@ h2 {
 }
 form {
     margin-top: 20px;
-}
-form table td {
+    border: 0px;
     padding-bottom: 3px;
 }
+table td {
+    padding-bottom: 3px;
+}
+
 #page-content strong {
     font-weight: bold;
 }

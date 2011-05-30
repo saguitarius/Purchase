@@ -1,0 +1,104 @@
+<%inherit file="/base/index_print.html"/>
+
+<%def name="title()">Заявка по подразделению ${c.boss_group_view}</%def>
+<%def name="heading()">
+    <h2>Заявка подразделения ${c.boss_group_view} на ${c.year} год</h2>
+</%def>
+
+<p><b>Ответственный по подразделению: ${app_globals.user_view}</b></p>
+
+    <table border="1" width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+            <th rowspan="2" width="15">     №</th>
+            <th rowspan="2" width="200">    Наименование</th>
+            <th rowspan="2" width="50">     Ед. Изм</th>
+            <th colspan="4">                Квартал</th>
+            <th rowspan="2" width="70">     Общее<br />кол-во</th>
+            <th rowspan="2" width="40">     Цена (руб.)</th>
+            <th rowspan="2" width="70">     Сумма (руб.)</th>
+            <th rowspan="2" width="80">     Источник<br />финансирования</th>
+            <th rowspan="2" width="80">     Для каких нужд</th>
+            <th rowspan="2" width="80">     Место<br />внедрения</th>
+            <th rowspan="2" width="120">    Примечание</th>
+            <th rowspan="2" width="120">    Статус</th>
+        </tr>
+        <tr>
+            <th width="50">1</th> 
+            <th width="50">2</th>
+            <th width="50">3</th>
+            <th width="50">4</th>               
+        </tr>
+    <% 
+        count = 0
+    %>
+    % for app_element in c.group_app_elements:
+        <% 
+            count += 1
+        %>
+        <tr>
+            <td>${count}</td>
+            <td>
+                ${app_element.items.brand} ${app_element.items.model}
+            </td>
+            <td>${app_element.items.units.name}</td>
+            <td align="right">${app_element.quarter1}</td>
+            <td align="right">${app_element.quarter2}</td>
+            <td align="right">${app_element.quarter3}</td>
+            <td align="right">${app_element.quarter4}</td>
+            <td align="right">${app_element.amount}</td>
+            <td align="right">${app_element.items.price}</td>
+            <td align="right">
+                % if app_element.status == 3:
+                    <i><b>${app_element.price}</b></i>
+                % else:
+                    ${app_element.price}
+                % endif
+            </td>
+            <td>${app_element.finsources.name}</td>
+            <td>${app_element.needss.name}</td>
+            <td>
+                ##${app_element.place}
+                % for place in c.available_groups:
+                %   if place[0] == app_element.place:
+                        ${place[1]}
+                %   endif
+                % endfor
+            </td>
+            <td>${app_element.note}</td>
+            <th>
+                % if app_element.status == 0:
+                    Утверждено
+                % endif
+                % if app_element.status == 1:
+                    Изменено
+                % endif
+                % if app_element.status == 2:
+                    Заменено
+                % endif
+                % if app_element.status == 3:
+                    Удалено
+                % endif
+            </th>           
+        </tr>
+    % endfor
+    
+        <tr>
+            <td></td>
+            <th>Итого:</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td align="right">${c.total_price}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    
+<p>Лимит по подразделению ${c.boss_group_view} составляет: <b>${c.limit.limit_value} руб</b>.</p>

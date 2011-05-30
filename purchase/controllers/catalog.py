@@ -31,6 +31,7 @@ from pylons import app_globals
 log = logging.getLogger(__name__)
 
 class UniqueSection(formencode.validators.FancyValidator):
+    """Проверка, уникально ли название раздела"""
     def _to_python(self, values, state):
         section_q = meta.Session.query(model.Section)
         query = section_q.filter_by(name=values['name'])
@@ -42,6 +43,7 @@ class UniqueSection(formencode.validators.FancyValidator):
         return values
 
 class NewSectionForm(formencode.Schema):
+    """Проверка данных формы создания нового раздела"""
     allow_extra_fields = True
     filter_extra_fields = True
     name = formencode.validators.String(
@@ -60,6 +62,7 @@ class NewSectionForm(formencode.Schema):
     chained_validators = [UniqueSection()]
     
 class EditSectionForm(formencode.Schema):
+    """Проверка данных формы изменения нового раздела"""
     allow_extra_fields = True
     filter_extra_fields = True
     name = formencode.validators.String(
@@ -77,11 +80,13 @@ class EditSectionForm(formencode.Schema):
     chained_validators = [UniqueSection()]
     
 class DeleteSectionForm(formencode.Schema):
+    """Проверка данных формы удаления нового раздела"""
     allow_extra_fields = True
     filter_extra_fields = True
     parent_section = formencode.validators.String(not_empty=True)
     
 class NewItemForm(formencode.Schema):
+    """Проверка данных формы создания нового объекта"""
     allow_extra_fields = True
     filter_extra_fields = True
     brand = formencode.validators.String(not_empty=True)
@@ -90,15 +95,21 @@ class NewItemForm(formencode.Schema):
     section_id = formencode.validators.String(not_empty=True)
     unit_id = formencode.validators.Int(not_empty=True)
     price = formencode.validators.Number(not_empty=True)
+    
+class SearchForm(formencode.Schema):
+    """Проверка данных формы поиска"""
+    allow_extra_fields = True
+    filter_extra_fields = True
+    search_string = formencode.validators.String(not_empty=True)
 
 class CatalogController(BaseController):
     
     @authorize(ValidAuthKitUser())
     def __before__(self):
-        '''
-            TEMP!!!
-        '''
-        # Identify user uid and put it into global var
+        """
+            Проверки для инициализации глобальных переменных
+        """
+        # Определить uid пользователя и поместить в глобальную переменную
         user_q = meta.Session.query(model.User)
         user = user_q.filter_by(username = request.environ['REMOTE_USER']).first()
         app_globals.user_id = user.uid
@@ -107,30 +118,37 @@ class CatalogController(BaseController):
             
         campaign_q = meta.Session.query(model.Campaign)
         c.current_campaign = campaign_q.filter_by(status = '1').first()
-        # Check if there is an active campaign
+        # Проверить, есть ли запущенная кампания
         if c.current_campaign:
             app_globals.current_campaign_id = c.current_campaign.id
             app_globals.current_campaign_start_date = c.current_campaign.start_date
-            app_globals.current_campaign_end_date = c.current_campaign.end_date        
-        '''
-            TEMP!!!
-        '''
-        pass
+            app_globals.current_campaign_end_date = c.current_campaign.end_date     
+            
+        c.finished_active_campaign = campaign_q.filter_by(status = '2').first()
+        # Проверить, есть ли завершённая активная кампания
+        if c.finished_active_campaign:
+            app_globals.current_campaign_id = c.finished_active_campaign.id
+            app_globals.current_campaign_start_date = c.finished_active_campaign.start_date
+            app_globals.current_campaign_end_date = c.finished_active_campaign.end_date    
+            
+            app_globals.finished_active_campaign_id = c.finished_active_campaign.id
+            app_globals.finished_active_campaign_start_date = c.finished_active_campaign.start_date
+            app_globals.finished_active_campaign_end_date = c.finished_active_campaign.end_date      
 
     def index(self):
-        "Returns list of main sections (inherited from Home)"
+        """Отображает список основных разделов (первый уровень)"""
         section_q = meta.Session.query(model.Section)
         c.section = section_q
         c.main_sections = section_q.filter_by(parent_section_id = 1)
-        return render('/derived/catalog/catalog.html')
+        h.redirect(url(controller='catalog', action='section', id=1))
     
     def section(self, id):        
-        "Returns list of subsections and breadcrumbs"
+        """Отображает список подразделов и breadcrumbs"""
         section_q = meta.Session.query(model.Section)
         c.section = section_q
              
         def breadcrumbs(section_id):
-            "Returns list of sectins up to Home."
+            "Отображает список разделов до Главного"
             a = ''
             b = []
             d = []
@@ -162,14 +180,14 @@ class CatalogController(BaseController):
             #h.redirect(url(controller='catalog', action='section', id='1'))
     
     def new_section(self):
-        "Renders form for creating a section"
+        """Отображение формы для создания раздела"""
         section_q = meta.Session.query(model.Section)
         c.available_sections = [(section.id, section.name) for section in section_q]
         return render('/derived/catalog/new_section.html')
     
     @validate(schema=NewSectionForm(), form='new_section')
     def create_section(self):
-        "Creates section"
+        """Создание раздела"""
         section = model.Section()
         section.name = self.form_result['name']
         section.parent_section_id = self.form_result['parent_section']
@@ -179,7 +197,7 @@ class CatalogController(BaseController):
         h.redirect(url(controller='catalog', action='section', id=section.id))
         
     def edit_section(self):
-        "Renders form for editing/deleting a section"
+        """Отображение формы для изменения/удаления раздела"""
         section_q = meta.Session.query(model.Section)
         section = section_q.filter_by(id=request.urlvars['id']).first()
         c.current_section = section
@@ -193,7 +211,7 @@ class CatalogController(BaseController):
     
     @validate(schema=EditSectionForm(), form='edit_section')
     def save_section(self):
-        "Saves changes"
+        """Сохранения параметров раздела"""
         section_q = meta.Session.query(model.Section)
         section = section_q.filter_by(id=request.urlvars['id']).first()
         section.name = self.form_result['name']
@@ -204,7 +222,7 @@ class CatalogController(BaseController):
     
     @validate(schema=DeleteSectionForm(), form='delete')
     def delete_section(self):
-        "Deletes section and all child sections"
+        """Удаляет раздел и все дочерние разделы"""
         section_q = meta.Session.query(model.Section)
         section = section_q.filter_by(id=request.urlvars['id']).first()
         meta.Session.delete(section)
@@ -212,7 +230,7 @@ class CatalogController(BaseController):
         h.redirect(url(controller='catalog', action='section', id=section.parent_section_id))
     
     def new_item(self):
-        "Renders form for creating an item"
+        """Отображение формы для создания объекта"""
         section_q = meta.Session.query(model.Section)
         available_sections = [(section.id, section.name) for section in section_q]
         c.available_sections = available_sections[1:]
@@ -222,7 +240,7 @@ class CatalogController(BaseController):
     
     @validate(schema=NewItemForm(), form='new_item')
     def create_item(self):
-        "Creates item"
+        """Создание объекта"""
         item = model.Item()
         item.brand = self.form_result['brand']
         item.model = self.form_result['model']
@@ -235,7 +253,7 @@ class CatalogController(BaseController):
         h.redirect(url(controller='catalog', action='new_item'))
     
     def edit_item(self):
-        "Renders form for editing/deleting a section"
+        """Отображение формы для изменения/удаления объекта"""
         section_q = meta.Session.query(model.Section)
         c.available_sections = [(section.id, section.name) for section in section_q]
         unit_q = meta.Session.query(model.Unit)
@@ -256,7 +274,7 @@ class CatalogController(BaseController):
     
     @validate(schema=NewItemForm(), form='edit_item')
     def save_item(self, id):
-        "Saves changes"
+        """Сохранение параметров объекта"""
         item_q = meta.Session.query(model.Item)
         item = item_q.filter_by(id=id).first()
         item.brand = self.form_result['brand']
@@ -270,9 +288,27 @@ class CatalogController(BaseController):
         h.redirect(url(controller='catalog', action='section', id=item.section_id))
     
     def delete_item(self):
-        "Deletes item"
+        """Удаление объекта"""
         item_q = meta.Session.query(model.Item)
         item = item_q.filter_by(id=request.urlvars['id']).first()
-        meta.Session.delete(item)
+        # Объект не удаляется из базы данных, а просто становится невидимым
+        # Это необходимо, чтобы сохранилась информация в старых заявках
+        item.deleted = 1
+        #meta.Session.delete(item)
         meta.Session.commit()
         h.redirect(url(controller='catalog', action='section', id=item.section_id))
+    
+    @validate(schema=SearchForm(), form='section')    
+    def search_item(self):
+        """Поиск объектов по каталогу"""
+        section_q = meta.Session.query(model.Section)
+        c.section = section_q
+        
+        item_q = meta.Session.query(model.Item)
+        c.search_results = item_q.filter_by(brand=self.form_result['search_string']).all()
+        
+        # To disable "Add" link
+        app_q = meta.Session.query(model.App)
+        c.current_app_status = app_q.filter_by(author_id = app_globals.user_id).filter_by(campaign_id = app_globals.current_campaign_id).first().status
+        
+        return render('/derived/catalog/search_item.html')

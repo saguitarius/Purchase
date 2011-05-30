@@ -2,79 +2,92 @@
 
 <%def name="title()">Реализация заявки по предприятию</%def>
 <%def name="heading()"><h1>Реализация заявки по предприятию</h1></%def>
-<h3>Информация о кампании</h3>
 
 ${h.form_start(h.url(controller='app', action='save_sale_app',), method="post")}
-        <table border="1" width="100%">
-            <tr>
-                <th rowspan="2" width="200">    Наименование</th>
-                <th rowspan="2" width="50">     Ед. Изм</th>
-                <th colspan="4">                Квартал</th>
-                <th rowspan="2" width="70">     Общее<br />кол-во</th>
-                <th rowspan="2" width="70">     Цена (руб.)</th>
-                <th rowspan="2" width="70">     Сумма (руб.)</th>
-                <th rowspan="2" width="80">     Источник<br />финансирования</th>
-                <th rowspan="2" width="80">     Для каких нужд</th>
-                <th rowspan="2" width="80">     Место<br />внедрения</th>
-                <th rowspan="2" width="80">     Действие</th>
-                ###<th rowspan="2" width="120">    Примечание</th>
-            </tr>
-            <tr>
-                <th width="50">1</th> 
-                <th width="50">2</th>
-                <th width="50">3</th>
-                <th width="50">4</th>               
-            </tr>
-        % for app_element in c.global_app_elements:
-            <tr>
-                <td>
-                    ${app_element.items.brand} ${app_element.items.model}
-                </td>
-                <td>${app_element.items.units.name}</td>
-                <td>${h.text(name='quarter1_el%s'%(app_element.id), size=2)}</td>
-                <td>${h.text(name='quarter2_el%s'%(app_element.id), size=2)}</td>
-                <td>${h.text(name='quarter3_el%s'%(app_element.id), size=2)}</td>
-                <td>${h.text(name='quarter4_el%s'%(app_element.id), size=2)}</td>
-                <td>${app_element.amount}</td>
-                <td>${app_element.items.price}</td>
-                <td>
-                    % if app_element.status == 3:
-                        <i><b>${app_element.price}</b></i>
-                    % else:
-                        ${app_element.price}
-                    % endif
-                </td>
-                <td>${app_element.finsources.name}</td>
-                <td>${app_element.needss.name}</td>
-                <td>
-                    ##${app_element.place}
-                    % for place in c.available_groups:
-                    %   if place[0] == app_element.place:
-                            ${place[1]}
-                    %   endif
-                    % endfor
-                </td>
-                <td>${h.select(name='action_el%s'%(app_element.id), options=c.available_actions, selected_values=[],)}</td>
-                ###<td>${app_element.note}</td>       
-            </tr>
-        % endfor
-        
-            <tr>
-                <th>Итого:</th>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>${c.total_price}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                ###<td></td>
-            </tr>
-        </table>
+    <table border="1">
+        <tr>
+            <th rowspan="2">                №</th>
+            <th rowspan="2" width="200">    Наименование</th>
+            <th rowspan="2" width="50">     Ед. Изм</th>
+            <th colspan="4">                Квартал</th>
+            <th rowspan="2" width="50">     Общее<br />кол-во</th>
+            <th rowspan="2" width="40">     Цена (руб.)</th>
+            <th rowspan="2" width="100">     Сумма (руб.)</th>
+            <th rowspan="2" width="70">     Источник<br />финансирования</th>
+            <th rowspan="2" width="80">     Для каких нужд</th>
+            <th rowspan="2" width="80">     Место<br />внедрения</th>
+            <th rowspan="2" width="80">     Действие</th>
+            ###<th rowspan="2" width="120">    Примечание</th>
+        </tr>
+        <tr>
+            <th width="70">1</th> 
+            <th width="70">2</th>
+            <th width="70">3</th>
+            <th width="70">4</th>               
+        </tr>
+    <% 
+        count = 0
+    %>
+    % for app_element in c.global_app_elements:
+        <% 
+            count += 1
+        %>
+        <tr>
+            <td>${count}</td>
+            <td>
+                ${app_element.items.brand} ${app_element.items.model}
+            </td>
+            <td>${app_element.items.units.name}</td>
+            <td>${app_element.quarter1} / ${h.text(name='quarter1p_el%s'%(app_element.id), size=2)}</td>
+            <td>${app_element.quarter2} / ${h.text(name='quarter2p_el%s'%(app_element.id), size=2)}</td>
+            <td>${app_element.quarter3} / ${h.text(name='quarter3p_el%s'%(app_element.id), size=2)}</td>
+            <td>${app_element.quarter4} / ${h.text(name='quarter4p_el%s'%(app_element.id), size=2)}</td>
+            <td>${app_element.amount} / ${app_element.amountp}</td>
+            <td>${app_element.items.price}</td>
+            <td>
+                % if (app_element.status == 3) or (app_element.status == 8):
+                    <i><b>${app_element.price} / ${app_element.pricep}</b></i>
+                % else:
+                    ${app_element.price} / ${app_element.pricep}
+                % endif
+            </td>
+            <td>${app_element.finsources.name}</td>
+            <td>${app_element.needss.name}</td>
+            <td>
+                ##${app_element.place}
+                % for place in c.available_groups:
+                %   if place[0] == app_element.place:
+                        ${place[1]}
+                %   endif
+                % endfor
+            </td>
+            <td>${h.select(name='action_el%s'%(app_element.id), options=c.available_actions, selected_values=[],)}</td>
+            ###<td>${app_element.note}</td>       
+        </tr>
+    % endfor
+    
+        <tr>
+            <td></td>
+            <th>Итого:</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>${c.total_price} / ${c.total_pricep}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            ###<td></td>
+        </tr>
+    </table>
 <br />        
 ${h.field(field=h.submit(value=u"Внести изменения в заявку", name='submit'))}
+
+
+<br /><br />
+<p><img src="/mail.png"> <a href="${h.url(controller='app', action='mail_sale_app')}">Информировать сотрудников по e-mail</a></p>
+<p><img src="/print.png"></img> <a href="${h.url(controller='app', action='sale_app_print')}">Версия для печати</a></p>

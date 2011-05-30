@@ -1,0 +1,94 @@
+<%inherit file="/base/index.html"/>
+
+<%def name="title()">Настройки</%def>
+<%def name="heading()"><h1>Настройки</h1></%def>
+
+<h2>Единицы измерения</h2>
+    <table border="1" width="400">
+    <tr>
+        <th>№</th>
+        <th>Название</th>
+        <th>Действие</th>
+    </tr>
+    <% 
+        count = 0
+    %>
+    % for unit in c.available_units:
+        <% 
+            count += 1
+        %>
+        <tr>
+            <td>${count}</td>
+            <td>${unit[1]}</td>
+            <td><a href="">Удалить</a></td>   
+        </tr>
+    % endfor 
+    
+${h.form_start(h.url(controller='catalog', action='add_unit'), method="post")}
+    ${h.field(
+        u"Единица измерения",
+        h.text(name='brand'),
+        required=True,
+    )}
+    ${h.field(field=h.submit(value=u"Добавить", name='submit'))}
+${h.form_end()}
+
+<h2>Источники финансирования</h2>
+    <table border="1" width="400">
+    <tr>
+        <th>№</th>
+        <th>Название</th>
+        <th>Действие</th>
+    </tr>
+    <% 
+        count = 0
+    %>
+    % for finsource in c.available_finsource:
+        <% 
+            count += 1
+        %>
+        <tr>
+            <td>${count}</td>
+            <td>${finsource[1]}</td>
+            <td><a href="">Удалить</a></td>   
+        </tr>
+    % endfor 
+    
+${h.form_start(h.url(controller='catalog', action='add_finsource'), method="post")}
+    ${h.field(
+        u"Источник финансирования",
+        h.text(name='brand'),
+        required=True,
+    )}
+    ${h.field(field=h.submit(value=u"Добавить", name='submit'))}
+${h.form_end()}
+
+<h2>Нужды</h2>
+    <table border="1" width="400">
+    <tr>
+        <th>№</th>
+        <th>Название</th>
+        <th>Действие</th>
+    </tr>
+    <% 
+        count = 0
+    %>
+    % for need in c.available_needs:
+        <% 
+            count += 1
+        %>
+        <tr>
+            <td>${count}</td>
+            <td>${need[1]}</td>
+            <td><a href="">Удалить</a></td>   
+        </tr>
+    % endfor 
+    
+${h.form_start(h.url(controller='catalog', action='add_need'), method="post")}
+    ${h.field(
+        u"Нужды",
+        h.text(name='brand'),
+        required=True,
+    )}
+    ${h.field(field=h.submit(value=u"Добавить", name='submit'))}
+${h.form_end()}

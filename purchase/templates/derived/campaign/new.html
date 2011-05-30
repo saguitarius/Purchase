@@ -1,5 +1,7 @@
 <%inherit file="/base/index.html"/>
 
+<p>Формат даты: <i>дд.мм.гггг</i></p>
+
 ${h.form_start(h.url(controller='campaign', action='create'), method="post")}
     ${h.field(
         u"Дата начала",
@@ -13,9 +15,32 @@ ${h.form_start(h.url(controller='campaign', action='create'), method="post")}
     )}
     ${h.field(
         u"Описание",
-        h.textarea(name='description', rows=7, cols=40),
+        h.textarea(name='description', rows=3, cols=40),
         required=True,
-    )}
+    )}  
+    
+    <table border="1" width="500">
+    <h3>Лимиты по подразделениям</h3>
+        <tr>
+            <th>№</th>
+            <th>Подразделение</th>
+            <th width="100">Лимит (руб.)</th>
+        </tr>
+    <% counter=0 %>
+    % for group in c.users.list_groups():
+        % if not (c.users.group_name(group) == 'admin'):
+            <% counter += 1 %>
+            <tr>
+                <td>${counter}</td>
+                <td>${c.users.group_view(group)}</td>
+                <td>
+                    ${h.text(name='limit%s'%(c.users.group_uid(group)), required=True,)}           
+                </td>
+            </tr>
+        % endif
+    % endfor
+    </table>
+    
     ${h.field(field=h.submit(value=u"Создать", name='submit'))}
 ${h.form_end()}
 

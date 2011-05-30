@@ -1,0 +1,113 @@
+<%inherit file="/base/index_print.html"/>
+
+<%def name="title()">Реализация заявки</%def>
+<%def name="heading()"><h2>Реализация заявки ${c.year} года</h2></%def>
+
+${h.form_start(h.url(controller='app', action='save_sale_app',), method="post")}
+        <table border="1" width="100%">
+            <tr>
+                <th rowspan="2" width="30">     №</th>
+                <th rowspan="2" width="200">    Наименование</th>
+                <th rowspan="2" width="50">     Ед. Изм</th>
+                <th colspan="8">                Квартал</th>
+                <th rowspan="2" width="50" colspan="2">     Общее<br />кол-во</th>
+                <th rowspan="2" width="40">     Цена (руб.)</th>
+                <th rowspan="2" width="80" colspan="2">     Сумма (руб.)</th>
+                <th rowspan="2" width="80">     Источник<br />финансирования</th>
+                <th rowspan="2" width="80">     Для каких нужд</th>
+                <th rowspan="2" width="80">     Место<br />внедрения</th>
+                <th rowspan="2" width="80">     Действие</th>
+                ###<th rowspan="2" width="120">    Примечание</th>
+            </tr>
+            <tr>
+                <th width="20" colspan="2">1</th> 
+                <th width="20" colspan="2">2</th>
+                <th width="20" colspan="2">3</th>
+                <th width="20" colspan="2">4</th>               
+            </tr>
+        <% 
+            count = 0
+        %>
+        % for app_element in c.global_app_elements:
+            <% 
+                count += 1
+            %>
+            <tr>
+                <td>${count}</td>
+                <td>
+                    ${app_element.items.brand} ${app_element.items.model}
+                </td>
+                <td>${app_element.items.units.name}</td>
+                <td >${app_element.quarter1}</td>
+                    <td>${app_element.quarter1p}</td>
+                <td>${app_element.quarter2}</td>
+                    <td>${app_element.quarter2p}</td>
+                <td>${app_element.quarter3}</td>
+                    <td>${app_element.quarter3p}</td>
+                <td>${app_element.quarter4}</td>
+                    <td>${app_element.quarter4p}</td>
+                <td>${app_element.amount}</td>
+                    <td>${app_element.amountp}</td>
+                <td>${app_element.items.price}</td>
+                <td>
+                    % if app_element.status == 3:
+                        <i><b>${app_element.price}/b></i>
+                    % else:
+                        ${app_element.price}
+                    % endif
+                </td>
+                <td>
+                    % if app_element.status == 3:
+                        <i><b>${app_element.pricep}</b></i>
+                    % else:
+                        ${app_element.pricep}
+                    % endif                
+                </td>
+                <td>${app_element.finsources.name}</td>
+                <td>${app_element.needss.name}</td>
+                <td>
+                    ##${app_element.place}
+                    % for place in c.available_groups:
+                    %   if place[0] == app_element.place:
+                            ${place[1]}
+                    %   endif
+                    % endfor
+                </td>
+                <td>
+                % if app_element.status == 5:
+                    Закуплено
+                % endif
+                % if app_element.status == 6:
+                    Изменено
+                % endif
+                % if app_element.status == 7:
+                    Заменено
+                % endif
+                % if app_element.status == 8:
+                    Не закуплено
+                % endif
+                </td>            
+                ###<td>${app_element.note}</td>       
+            </tr>
+        % endfor
+        
+            <tr>
+                <td></td>
+                <th>Итого:</th>
+                <td></td>
+                <td colspan="2"></td>
+                <td colspan="2"></td>
+                <td colspan="2"></td>
+                <td colspan="2"></td>
+                <td colspan="2"></td>
+                <td></td>
+                <td>${c.total_price}</td>
+                    <td>${c.total_pricep}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                ###<td></td>
+            </tr>
+        </table>
+<br />        

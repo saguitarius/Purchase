@@ -1,0 +1,52 @@
+<%inherit file="/base/index.html"/>
+
+<%namespace file="/derived/catalog/catalog.html" name="catalog" import='*'/>
+<h3><a href="${h.url(controller='catalog', action='section', id='1')}">Каталог</a> > Результаты поиска</h3>
+    <div id="yui-main">
+        <div class="yui-b">
+             ${search_results()}     
+        </div>
+    </div>
+    <div class="yui-b">
+        ${all_sections()}
+        ${search()}
+    </div>
+
+<%def name="heading()">
+    <h1 class="main">Каталог</h1>
+</%def>
+
+<%def name="search_results()">
+        <p><b>Результаты поиска:</b></p>
+        <table border="1" width="100%">
+            <tr>
+                <th>Марка</th>
+                <th>Модель</th>
+                <th>Описание</th>
+                <th>Цена</th>
+                <th>Дата изменения</th>
+                % if (c.current_app_status == 1) and h.auth.authorized(h.auth.is_valid_user) and (not h.auth.authorized(h.auth.has_admin_role)):
+                    <th>Добавить<br />в заявку</th>
+                % endif
+                % if h.auth.authorized(h.auth.has_admin_role):
+                    <th>Действия</th>
+                % endif
+            </tr>
+        % for item in c.search_results :
+            <tr>
+                <td>${item.brand}</td>
+                <td>${item.model}</td>
+                <td>${item.description}</td>
+                <td>${item.price}</td>
+                <td>${item.edited}</td>
+                % if (c.current_app_status == 1) and h.auth.authorized(h.auth.is_valid_user) and (not h.auth.authorized(h.auth.has_admin_role)):
+                    <th><a href="${h.url(controller='app', action='add_item', id=item.id,)}">Добавить</a></th>
+                % endif
+                % if h.auth.authorized(h.auth.has_admin_role):
+                    <td><a href="${h.url(controller='catalog', action='edit_item', id=item.id)}">Изменить</a>
+                        <a href="${h.url(controller='catalog', action='delete_item', id=item.id)}">Удалить</a></td>
+                % endif
+            </tr>
+        % endfor
+        </table>
+</%def>

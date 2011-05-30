@@ -1,0 +1,112 @@
+<%inherit file="/base/index_print.html"/>
+
+<%def name="title()">Заявка на закупку МТР от ${c.now}</%def>
+<%def name="heading()"><h2>Заявка на закупку МТР от ${c.now}</h2></%def>
+
+    <table border="1" width="100%">
+        <tr>
+            <th rowspan="2" width="30">     №</th>
+            <th rowspan="2" width="200">    Наименование</th>
+            <th rowspan="2" width="50">     Ед. Изм</th>
+            <th colspan="4">                Квартал</th>
+            <th rowspan="2" width="70">     Общее<br />кол-во</th>
+            <th rowspan="2" width="70">     Цена (руб.)</th>
+            <th rowspan="2" width="70">     Сумма (руб.)</th>
+            <th rowspan="2" width="80">     Источник<br />финансирования</th>
+            <th rowspan="2" width="80">     Для каких нужд</th>
+            <th rowspan="2" width="80">     Место<br />внедрения</th>
+            ###<th rowspan="2" width="120">    Примечание</th>
+        </tr>
+        <tr>
+            <th width="50">1</th> 
+            <th width="50">2</th>
+            <th width="50">3</th>
+            <th width="50">4</th>               
+        </tr>
+    <% 
+        count = 0
+    %>
+    % for app_element in c.global_app_elements:
+        % if app_element.status != 3:
+            <% 
+                count += 1
+            %>
+            <tr>
+                <td>${count}</td>
+                <td>
+                    ${app_element.items.brand} ${app_element.items.model}
+                </td>
+                <td>${app_element.items.units.name}</td>
+                <td align="right">${app_element.quarter1}</td>
+                <td align="right">${app_element.quarter2}</td>
+                <td align="right">${app_element.quarter3}</td>
+                <td align="right">${app_element.quarter4}</td>
+                <td align="right">${app_element.amount}</td>
+                <td align="right">${app_element.items.price}</td>
+                <td align="right">
+                    % if app_element.status == 3:
+                        <i><b>${app_element.price}</b></i>
+                    % else:
+                        ${app_element.price}
+                    % endif
+                </td>
+                <td>${app_element.finsources.name}</td>
+                <td>${app_element.needss.name}</td>
+                <td>
+                    ##${app_element.place}
+                    % for place in c.available_groups:
+                    %   if place[0] == app_element.place:
+                            ${place[1]}
+                    %   endif
+                    % endfor
+                </td>
+                ###<td>${app_element.note}</td>       
+            </tr>
+        % endif
+    % endfor
+    
+        <tr>
+            <td></td>
+            <th>Итого:</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td align="right">${c.total_price}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            ###<td></td>
+        </tr>
+    </table>
+    <br /><br />
+    <table border="1" width="500">
+    <h3>Лимиты по подразделениям</h3>
+        <tr>
+            <th>№</th>
+            <th>Подразделение</th>
+            <th width="100">Лимит (руб.)</th>
+            <th width="100">Сумма по заявке (руб.)</th>
+        </tr>
+    <% counter=0 %>
+    % for group in c.users.list_groups():
+        % if not (c.users.group_name(group) == 'admin'):
+            <% counter += 1 %>
+            <tr>
+                <td>${counter}</td>
+                <td>${c.users.group_view(group)}</td>
+                <td align="right">
+                    % for limit in c.limit:
+                    %   if limit.group_uid == c.users.group_uid(group):
+                            ${limit.limit_value}
+                    %   endif
+                    % endfor
+                </td>
+                <td align="right">${c.total_group_price[group]}</td>
+            </tr>
+        % endif
+    % endfor
+    </table>

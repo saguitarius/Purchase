@@ -4,7 +4,7 @@ UNDEFINED = runtime.UNDEFINED
 __M_dict_builtin = dict
 __M_locals_builtin = locals
 _magic_number = 6
-_modified_time = 1302680421.4260001
+_modified_time = 1306737541.302
 _template_filename='D:\\PyProjects\\Purchase\\purchase\\templates/derived/account/signin.html'
 _template_uri='/derived/account/signin.html'
 _template_cache=cache.Cache(__name__, _modified_time)
@@ -68,7 +68,7 @@ def render_heading(context):
     try:
         __M_writer = context.writer()
         # SOURCE LINE 4
-        __M_writer(u'<h1>\u0412\u0445\u043e\u0434 \u0432 \u0441\u0438\u0441\u0442\u0435\u043c\u0443</h1>')
+        __M_writer(u'<h1>\u0421\u0438\u0441\u0442\u0435\u043c\u0430 \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u044f \u0437\u0430\u043a\u0443\u043f\u043a\u0430\u043c\u0438 \u2012 \u0432\u0445\u043e\u0434</h1>')
         return ''
     finally:
         context.caller_stack._pop_frame()
@@ -79,7 +79,7 @@ def render_title(context):
     try:
         __M_writer = context.writer()
         # SOURCE LINE 3
-        __M_writer(u'\u0412\u0445\u043e\u0434 \u0432 \u0441\u0438\u0441\u0442\u0435\u043c\u0443')
+        __M_writer(u'\u0421\u0438\u0441\u0442\u0435\u043c\u0430 \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u044f \u0437\u0430\u043a\u0443\u043f\u043a\u0430\u043c\u0438 \u2012 \u0432\u0445\u043e\u0434')
         return ''
     finally:
         context.caller_stack._pop_frame()

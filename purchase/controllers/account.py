@@ -37,6 +37,7 @@ import datetime
 log = logging.getLogger(__name__)
 
 class AddUserForm(formencode.Schema):
+    """Проверка данных формы добавления новой учётной записи пользователя"""
     allow_extra_fields = True
     filter_extra_fields = False
     username = formencode.validators.PlainText(
@@ -67,6 +68,7 @@ class AddUserForm(formencode.Schema):
         })
     
 class EditUserForm(formencode.Schema):
+    """Проверка данных формы изменения учётной записи пользователя"""
     allow_extra_fields = True
     filter_extra_fields = False
     view = formencode.validators.String(
@@ -91,6 +93,7 @@ class EditUserForm(formencode.Schema):
         })
     
 class UniqueGroup(formencode.validators.FancyValidator):
+    """Проверка, уникально ли название группы"""
     def _to_python(self, values, state):
         users = request.environ['authkit.users']
         available_groups = users.list_groups()
@@ -99,6 +102,7 @@ class UniqueGroup(formencode.validators.FancyValidator):
         return values
 
 class AddGroupForm(formencode.Schema):
+    """Проверка данных формы добавления новой группы"""
     allow_extra_fields = True
     filter_extra_fields = False
     group = formencode.validators.PlainText(
@@ -115,6 +119,7 @@ class AddGroupForm(formencode.Schema):
     chained_validators = [UniqueGroup()]
 
 class EditGroupForm(formencode.Schema):
+    """Проверка данных формы изменения параметров"""
     allow_extra_fields = True
     filter_extra_fields = False
     group = formencode.validators.PlainText(
@@ -132,24 +137,22 @@ class EditGroupForm(formencode.Schema):
 class AccountController(BaseController):
     
     def index(self):
-        "Just redirects to main page of the controlles"
+        """Перенаправление на главную страницу контроллера"""
         redirect(url(h.url(controller='account', action='manage_accounts')))
 
     def signin(self):
-        "Sign in"
-        '''
-        Quite a lot is happening here:
-        - adding global variable with user_id for future uses
-        - verifying if campaign has started
-        - verifying if there's an app for current campaign, if not - create it
-        - TODO: something has to be done to previous apps
-        - if there's no current campaign, reset global vars
-        '''
+        """Вход в систему
+        Здесь происходит много всего:
+        - добавление глобальной переменной, содержащей user_id
+        - проверка, началась ли кампания
+        - проверка, создана ли заявка для текущей кампании; если нет - создание
+        - если кампания не запущена, сбросить глобальные переменные
+        - TODO: что-то надо сделать с предыдущими заявками"""
         if not request.environ.get('REMOTE_USER'):
             # This triggers the AuthKit middleware into displaying the sign-in form
             abort(401)
         else:
-            # Identify user uid and put it into global vars
+            # Определить uis пользователя и поместить в глобальную переменную
             user_q = meta.Session.query(model.User)
             user = user_q.filter_by(username = request.environ['REMOTE_USER']).first()
             app_globals.user_id = user.uid
@@ -158,17 +161,17 @@ class AccountController(BaseController):
             
             campaign_q = meta.Session.query(model.Campaign)
             c.current_campaign = campaign_q.filter_by(status = '1').first()
-            # Check if there is an active campaign
+            # Проверить, есть ли активные кампании
             if c.current_campaign:
                 app_globals.current_campaign_id = c.current_campaign.id
                 app_globals.current_campaign_start_date = c.current_campaign.start_date
                 app_globals.current_campaign_end_date = c.current_campaign.end_date
-                # Check if user has app for this campaign
+                # Проверить, есть ли у пользователя заявка для этой кампании
                 app_q = meta.Session.query(model.App)
                 c.app = app_q.filter_by(author_id = app_globals.user_id).filter_by(campaign_id = app_globals.current_campaign_id).first()
                 try:
                     c.app.id
-                # Create app for new campaign
+                # Создать заявка для новой кампании
                 except:
                     app = model.App()
                     app.author_id = app_globals.user_id
@@ -179,9 +182,9 @@ class AccountController(BaseController):
                     meta.Session.add(app)
                     meta.Session.flush()
                     '''
-                    Have to do something with previous apps!!!
+                    Сделать что-то с предыдущими заявками!!!
                     '''
-            # If none found, reset global vars
+            # Если кампаний не найдено, обнулить глобальные переменные
             else:
                 #app_globals.current_campaign_id = 0
                 #app_globals.current_campaign_start_date = 0
@@ -190,14 +193,14 @@ class AccountController(BaseController):
             return render('/derived/account/signedin.html')
 
     def signout(self):
-        "Sign out"
+        """Выход из системы"""
         # The actual removal of the AuthKit cookie occurs when the response passes
         # through the AuthKit middleware, we simply need to display a page
         # confirming the user is signed out
         return render('/derived/account/signedout.html')
     
     def signinagain(self):
-        "Sign in with other username and password"
+        """Вход в системe с другими логином и паролем"""
         request.environ['paste.auth_tkt.logout_user']()
         return render('/derived/account/signin.html').replace('%s', h.url('signin'))
 
@@ -208,7 +211,7 @@ class AccountController(BaseController):
     
     @authorize(HasAuthKitRole(['admin']))
     def add_user_form(self):
-        "Renders registration form, only Admin should do this"
+        """Показывает форму регистрации, только Администратор должен иметь доступ к ней"""
         users = request.environ['authkit.users']
         #c.available_groups = users.list_groups()[1:]
         groups_q = meta.Session.query(model.Group)    
@@ -219,7 +222,7 @@ class AccountController(BaseController):
     @authorize(HasAuthKitRole(['admin']))
     @validate(schema=AddUserForm(), form='add_user_form', auto_error_formatter=custom_formatter)
     def add_user(self):
-        "Adding new user to the database"
+        """Добавление нового пользователя"""
         users = request.environ['authkit.users']
         c.available_groups = users.list_groups()[1:]
         available_roles = users.list_roles()
@@ -245,7 +248,7 @@ class AccountController(BaseController):
     
     @authorize(HasAuthKitRole(['admin']))
     def edit_user_form(self):
-        "Renders registration form, only Admin should do this"
+        """Показывает форму регистрации, только Администратор должен иметь доступ к ней"""
         users = request.environ['authkit.users']
         c.username = request.params['username']
         c.password = users.user_password(c.username)
@@ -272,15 +275,14 @@ class AccountController(BaseController):
     @authorize(HasAuthKitRole(['admin']))
     @validate(schema=EditUserForm(), form='edit_user_form', auto_error_formatter=custom_formatter)
     def edit_user(self):
-        "Deleting old user and Adding new user to the database"
+        """Изменение параметов учётной записи пользователя"""
         users = request.environ['authkit.users']
         #available_roles = users.list_roles()
         try:
             user_role = users.user_roles(request.params['username'])[0]
         except:
             user_role = 'user'
-        users.user_delete(request.params['username'])
-        users.user_create(request.params['username'], password=self.form_result['password'])
+        users.user_set_password(request.params['username'], self.form_result['password'])
         users.user_set_view(request.params['username'], self.form_result['view'])
         users.user_set_mail(request.params['username'], self.form_result['mail'])        
         users.user_set_group(request.params['username'], self.form_result['group'])
@@ -298,7 +300,7 @@ class AccountController(BaseController):
     
     @authorize(HasAuthKitRole(['admin']))
     def delete_user(username):
-        "Deletes user from datebase. Need acknowledgement here with JS!!!"
+        """Удаление пользователя"""
         users = request.environ['authkit.users']
         if request.params['username'] == 'admin':
             # Javascript here!
@@ -310,12 +312,14 @@ class AccountController(BaseController):
     @authorize(HasAuthKitRole(['admin']))
     @validate(schema=AddGroupForm(), form='manage_accounts', auto_error_formatter=custom_formatter)
     def add_group(self):
+        """Добавление группы"""
         users = request.environ['authkit.users']
         users.group_create(request.params['group'])
         redirect(url(h.url(controller='account', action='manage_accounts')))
     
     @authorize(HasAuthKitRole(['admin']))
     def edit_group_form(self):
+        """Форма изменения параметров группы"""
         users = request.environ['authkit.users']
         c.group = request.params['group']
         c.group_view = users.group_view(c.group)
@@ -340,8 +344,9 @@ class AccountController(BaseController):
     @authorize(HasAuthKitRole(['admin']))
     @validate(schema=EditGroupForm(), form='edit_group_form', auto_error_formatter=custom_formatter)
     def edit_group(self):
+        """Изменение параметров группы"""
         users = request.environ['authkit.users']
-        # Change group name
+        # Изменение названия группы
         if self.form_result['group'] != request.params['group']:
             users.group_create(self.form_result['group'])
             for user in users.list_users():
@@ -349,9 +354,9 @@ class AccountController(BaseController):
                     users.user_remove_group(user)
                     users.user_set_group(user, self.form_result['group'])
             users.group_delete(request.params['group'])
-        # Change group boss
+        # Изменение ответственного по группе
         if not users.user_has_role(self.form_result['boss'], 'boss'):
-            # Create list of users in group
+            # Создание списка пользователей группы
             users_in_group_list = []
             for user in users.list_users():
                 if users.user_has_group(user, request.params['group']):
@@ -359,7 +364,7 @@ class AccountController(BaseController):
                         users_in_group_list += [user]
                     except:
                         pass       
-            # Remove old boss and add new boss
+            # Удаление старого ответственного по группе и назначение нового
             for user in users_in_group_list:
                 if users.user_has_role(user, 'boss'):
                     users.user_remove_role(user, 'boss')
@@ -369,12 +374,13 @@ class AccountController(BaseController):
     
     @authorize(HasAuthKitRole(['admin']))
     def delete_group(self):
+        """Удаление группы"""
         users = request.environ['authkit.users']
         for user in users.list_users():
-            # Remove users from unexisting group
+            # Перемещение пользователей из несуществующей группы
             if users.user_has_group(user, request.params['group']):
                 users.user_remove_group(user)
-            # Remove Boss role from boss of unexisting group
+            # Удаление права отстветственного несуществующей группы
             if users.user_has_role(user, 'boss'):
                 users.user_remove_role(user, 'boss')
         users.group_delete(request.params['group'])
@@ -382,7 +388,8 @@ class AccountController(BaseController):
     
     @authorize(HasAuthKitRole(['admin']))
     def manage_accounts(self):
-        "Creating and editing user data, groups and roles."
+        """Основная страница управления пользователями
+        Список пользователей, групп"""
         users = request.environ['authkit.users']
         boss_list = {}
         c.users = users

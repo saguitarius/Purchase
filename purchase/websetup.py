@@ -35,13 +35,12 @@ def setup_app(command, conf, vars):
     users.role_create("director")
     users.role_create("user")
     
+    users.group_create(u"admin")
+    users.group_set_view(u"admin", u"Администрация")
     users.group_create(u"SOTO-50")
     users.group_set_view(u"SOTO-50", u"СОТО-50")
     users.group_create(u"OLM-15")
     users.group_set_view(u"OLM-15", u"ОЛМ-15")
-    users.group_create(u"admin")
-    users.group_set_view(u"admin", u"Администрация")
-    
     
     users.user_create("admin", password="admin")
     users.user_set_view("admin", u'Администратор')
@@ -49,48 +48,48 @@ def setup_app(command, conf, vars):
     users.user_set_group("admin", group="admin")
     
     users.user_create("boss1", password="boss")
-    users.user_set_view("boss1", u'Фамилия Имя')
+    users.user_set_view("boss1", u'Ответственный по подразделению')
     users.user_add_role("boss1", role="boss")
     users.user_set_group("boss1", group="SOTO-50")
     
     users.user_create("boss2", password="boss")
-    users.user_set_view("boss2", u'Фамилия Имя')
+    users.user_set_view("boss2", u'Ответственный по подразделению')
     users.user_add_role("boss2", role="boss")
     users.user_set_group("boss2", group="OLM-15")
     
     users.user_create("director", password="director")
-    users.user_set_view("director", u'Фамилия Имя')
+    users.user_set_view("director", u'Ответственный по предприятию')
     users.user_add_role("director", role="director")
     users.user_set_group("director", group="admin")
     
     users.user_create("user1", password="user1")
-    users.user_set_view("user1", u'Фамилия Имя')
+    users.user_set_view("user1", u'Иванов Иван Иванович')
     users.user_add_role("user1", role="user")
     users.user_set_group("user1", group="SOTO-50")
     
     users.user_create("user2", password="user2")
-    users.user_set_view("user2", u'Фамилия Имя')
+    users.user_set_view("user2", u'Петров Пётр Петрович')
     users.user_add_role("user2", role="user")
     users.user_set_group("user2", group="SOTO-50")
     
     users.user_create("user3", password="user3")
-    users.user_set_view("user3", u'Фамилия Имя')
+    users.user_set_view("user3", u'Семёнов Семён Семёнович')
     users.user_add_role("user3", role="user")
     users.user_set_group("user3", group="OLM-15")
     
     users.user_create("user4", password="user4")
-    users.user_set_view("user4", u'Фамилия Имя')
+    users.user_set_view("user4", u'Сергеев Сергей Сергеевич')
     users.user_add_role("user4", role="user")
     users.user_set_group("user4", group="OLM-15")
     
-    # Adding campaign
-    campaign = model.Campaign()
-    campaign.start_date = '2011.04.01'
-    campaign.end_date = '2011.04.21'
-    campaign.status = '1'
-    campaign.description = u'Тестовая кампания'
-    meta.Session.add(campaign)
-    meta.Session.flush()
+#    # Adding campaign
+#    campaign = model.Campaign()
+#    campaign.start_date = '2011.05.20'
+#    campaign.end_date = '2011.05.30'
+#    campaign.status = '1'
+#    campaign.description = u'Тестовая кампания'
+#    meta.Session.add(campaign)
+#    meta.Session.flush()
     
     # Adding units
     log.info("Adding units...")
@@ -201,57 +200,6 @@ def setup_app(command, conf, vars):
     section_amd.parent_section_id = '7'
     meta.Session.add(section_amd)
     meta.Session.flush()
-    
-    # Adding items
-    log.info("Adding items...")
-    item_1 = model.Item()
-    item_1.brand = u'Palit'
-    item_1.model = u'Radeon 9600'
-    item_1.description = u'DVI TV In/Out 128Mb'
-    item_1.section_id = '6'
-    item_1.unit_id = '1'
-    item_1.price = '3500'
-    meta.Session.add(item_1)
-    meta.Session.flush()
-    
-    item_2 = model.Item()
-    item_2.brand = u'Sapphire'
-    item_2.model = u'Geforce 8800GT'
-    item_2.description = u'512Mb <PCI-E> DDR-3 ZOTAC'
-    item_2.section_id = '6'
-    item_2.unit_id = '1'
-    item_2.price = '4500'
-    meta.Session.add(item_2)
-    meta.Session.flush()
 
-    item_3 = model.Item()
-    item_3.brand = u'Intel'
-    item_3.model = u'Core 2 Duo E7500'
-    item_3.description = u'2.93ГГц, 3МБ, FSB 1066МГц, LGA775, OEM'
-    item_3.section_id = '11'
-    item_3.unit_id = '1'
-    item_3.price = '3280'
-    meta.Session.add(item_3)
-    meta.Session.flush()
-    
-    item_4 = model.Item()
-    item_4.brand = u'Intel'
-    item_4.model = u'Core i3-2100'
-    item_4.description = u'3.10ГГц, 3МБ, LGA1155, OEM'
-    item_4.section_id = '11'
-    item_4.unit_id = '1'
-    item_4.price = '5500'
-    meta.Session.add(item_4)
-    meta.Session.flush()
-    
-    item_5 = model.Item()
-    item_5.brand = u'Intel'
-    item_5.model = u'Core 2 Quad Q9300'
-    item_5.description = u'2.50ГГц, 6МБ, FSB 1333МГц, LGA775, ОЕМ'
-    item_5.section_id = '11'
-    item_5.unit_id = '1'
-    item_5.price = '3500'
-    meta.Session.add(item_5)
-    meta.Session.flush()
     
     log.info("Everything OK...")

@@ -1,0 +1,134 @@
+<%inherit file="/base/index_print.html"/>
+
+<%def name="title()">Заявка</%def>
+<%def name="heading()">
+    <h2>Заявка на ${c.year} год.</h2>
+    <b>Сотрудник: ${app_globals.user_view}</b><br />
+    <b>Подразделение: ${app_globals.user_group}</b>
+</%def> 
+
+
+${h.form_start(h.url(controller='app', action='save_user_app', id=c.current_app.id), method="post")}
+
+    <table border="1" width="100%">
+        <tr>
+            <th rowspan="2" width="15">     №</th>
+            <th rowspan="2" width="200">    Наименование</th>
+            <th rowspan="2" width="50">     Ед. Изм</th>
+            <th colspan="4">                Квартал</th>
+            <th rowspan="2" width="50">     Общее<br />кол-во</th>
+            <th rowspan="2" width="40">     Цена (руб.)</th>
+            <th rowspan="2" width="50">     Сумма (руб.)</th>
+            <th rowspan="2" width="80">     Источник<br />финансирования</th>
+            <th rowspan="2" width="80">     Для каких нужд</th>
+            <th rowspan="2" width="80">     Место<br />внедрения</th>
+            <th rowspan="2" width="90">     Примечание</th>
+            <th rowspan="2" width="90">     Статус</th>
+        </tr>
+        <tr>
+            <th width="70">1</th> 
+            <th width="70">2</th>
+            <th width="70">3</th>
+            <th width="70">4</th>               
+        </tr>
+    <% 
+        count = 0
+    %>
+    % for app_element in c.current_app_elements:
+        <% 
+            count += 1
+        %>
+        <tr>
+            <td>${count}</td>
+            <td>${app_element.items.brand} ${app_element.items.model}</td>
+            <td>${app_element.items.units.name}</td>
+            % if c.current_app.status == 1:
+                <td align="right">${app_element.quarter1}</td>
+                <td align="right">${app_element.quarter2}</td>
+                <td align="right">${app_element.quarter3}</td>
+                <td align="right">${app_element.quarter4}</td>
+                <td align="right">${c.element_amount[app_element.id]}</td>
+                <td align="right">${app_element.items.price}</td>
+                % if app_element.status == 3:
+                    <td align="right"><i><b>${c.element_price[app_element.id]} / ${c.element_pricep[app_element.id]}</b></i></td>
+                % else:
+                    <td align="right">${c.element_price[app_element.id]}</td>
+                % endif
+            % endif
+            % if c.current_app.status in (2,3,4):
+                <td align="right">${app_element.quarter1} / ${app_element.quarter1p}</td>
+                <td align="right">${app_element.quarter2} / ${app_element.quarter2p}</td>
+                <td align="right">${app_element.quarter3} / ${app_element.quarter3p}</td>
+                <td align="right">${app_element.quarter4} / ${app_element.quarter4p}</td>
+                <td align="right">${c.element_amount[app_element.id]} / ${c.element_amountp[app_element.id]}</td>
+                <td align="right">${app_element.items.price}</td>
+                % if app_element.status == 3:
+                    <td align="right"><i><b>${c.element_price[app_element.id]} / ${c.element_pricep[app_element.id]}</b></i></td>
+                % else:
+                    <td align="right">${c.element_price[app_element.id]} / ${c.element_pricep[app_element.id]}</td>
+                % endif
+            % endif    
+            <td>${app_element.finsources.name}</td>                
+            <td>${app_element.needss.name}</td>
+            <td>
+                    % for place in c.available_groups:
+                    %   if place[0] == app_element.place:
+                            ${place[1]}
+                    %   endif
+                    % endfor
+            </td>
+            <td>${app_element.note}</td>
+            <td>
+                % if app_element.status == 1:
+                    Изменено
+                % endif
+                % if app_element.status == 2:
+                    Заменено
+                % endif
+                % if app_element.status == 3:
+                    Удалено
+                % endif
+                % if app_element.status == 4:
+                    Утверждено
+                % endif
+                % if app_element.status == 5:
+                    Закуплено
+                % endif
+                % if app_element.status == 6:
+                    Закуплено, изменено
+                % endif
+                % if app_element.status == 7:
+                    Закуплено, заменено
+                % endif
+                % if app_element.status == 8:
+                    Не закуплено
+                % endif
+            </td>
+        </tr>
+    % endfor
+    
+        <tr>
+            <td></td>
+            <th>Итого:</th>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            % if c.current_app.status == 1:
+                <td align="right">${c.total_price}</td>
+            % endif
+            % if c.current_app.status in (2,3,4):
+                <td align="right">${c.total_price} / ${c.total_pricep}</td>
+            % endif
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+        
+<br />

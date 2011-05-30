@@ -1,0 +1,40 @@
+span.error-message, span.required {
+    font-weight: bold;
+    color: #f00;
+}
+
+#maintabs li a#current
+{
+    background: #113958;
+    color: #fff;
+    font-weight: bold;
+    border-right: 2px solid #468AC7;
+}
+body{
+    font-family: Arial;
+    font-size: 70%;
+}
+h1 {
+    font-family: Georgia;
+    color: #003;
+    font-size: 197%;
+    margin: 15px 20px 10px 20px;
+}
+h2 {
+    font-family: Georgia;
+    color: #003;
+    font-size: 138.5%;
+    margin-top: 1.5em;
+}
+table td {
+    padding-bottom: 0px;
+}
+#page-content strong {
+    font-weight: bold;
+}
+#page-content em {
+    font-style: italic;
+}
+#page-content p {
+    margin-bottom: 20px;
+}

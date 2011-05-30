@@ -43,7 +43,7 @@ ${h.form_start(h.url(controller='catalog', action='create_item'), method="post")
         h.text(name='price'),
         required=True,
     )}
-    ${h.field(field=h.submit(value=u"Создать", name='submit'))}
+    ${h.field(field=h.submit(value=u"Добавить", name='submit'))}
 ${h.form_end()}
 
 <%def name="heading()">

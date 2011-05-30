@@ -1,5 +1,10 @@
 ## -*- coding: utf-8 -*-
 
+"""
+    Создание переменных для проверки прав пользователей 
+        в шаблонах представления.
+"""
+
 from authkit.authorize.pylons_adaptors import authorized
 
 from authkit.permissions import ValidAuthKitUser
